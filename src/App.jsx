@@ -10,8 +10,10 @@ const PSH_OPTIONS = [
     { value: 7, label: '7 Hours (Desert Climates)' }
 ];
 const BATTERY_DOD_OPTIONS = [
+    { value: 0.95, label: 'Lithium LiFePO4 (95% DoD)' },
     { value: 0.9, label: 'Lithium-ion (90% DoD)' },
-    { value: 0.8, label: 'Tubular / LiFePO4 (80% DoD)' },
+    { value: 0.85, label: 'Lithium LiFePO4 (85% DoD)' },
+    { value: 0.8, label: 'LiFePO4 / Tubular (80% DoD)' },
     { value: 0.75, label: 'Tubular (75% DoD)' },
     { value: 0.70, label: 'Tubular (70% DoD)' },
     { value: 0.5, label: 'Lead-Acid (50% DoD)' }
@@ -20,7 +22,12 @@ const SYSTEM_VOLTAGE_OPTIONS = [
     { value: 12, label: '12V' }, { value: 24, label: '24V' }, { value: 48, label: '48V' }
 ];
 const AVAILABLE_BATTERY_VOLTAGE_OPTIONS = [
-    { value: 2, label: '2V' }, { value: 6, label: '6V' }, { value: 12, label: '12V' }
+    { value: 2, label: '2V (Cell)' }, 
+    { value: 3.2, label: '3.2V (LFP Cell)' },
+    { value: 6, label: '6V (Block)' }, 
+    { value: 12, label: '12V (Block)' },
+    { value: 24, label: '24V (Pack)' },
+    { value: 48, label: '48V (Rack)' }
 ];
 // Inverter sizes in kVA
 const INVERTER_SIZES_KVA = [1, 1.5, 2, 2.5, 3, 4, 5, 8, 10, 12];
@@ -134,7 +141,7 @@ const CalculatorPage = ({ project, updateProject, goBack, isNew }) => {
     };
 
     const addAppliance = () => {
-        const newAppliance = { id: Date.now(), name: '', quantity: 1, wattage: 0, hours: 0 };
+        const newAppliance = { id: Date.now(), name: '', quantity: 1, wattage: 0, hours: 0, unit: 'W' };
         setProjectData(prevData => ({ ...prevData, appliances: [...(prevData.appliances || []), newAppliance] }));
     };
 
@@ -145,12 +152,18 @@ const CalculatorPage = ({ project, updateProject, goBack, isNew }) => {
 
     const totalWattHoursFromAudit = useMemo(() => {
         if (!projectData.appliances) return 0;
-        return projectData.appliances.reduce((total, app) => total + (Number(app.quantity) * Number(app.wattage) * Number(app.hours)), 0);
+        return projectData.appliances.reduce((total, app) => {
+            const wattage = app.unit === 'HP' ? Number(app.wattage) * 746 : Number(app.wattage);
+            return total + (Number(app.quantity) * wattage * Number(app.hours));
+        }, 0);
     }, [projectData.appliances]);
     
     const estimatedPeakLoadFromAudit = useMemo(() => {
         if (!projectData.appliances || projectData.calcMethod !== 'audit') return 0;
-        return projectData.appliances.reduce((total, app) => total + (Number(app.quantity) * Number(app.wattage)), 0);
+        return projectData.appliances.reduce((total, app) => {
+            const wattage = app.unit === 'HP' ? Number(app.wattage) * 746 : Number(app.wattage);
+            return total + (Number(app.quantity) * wattage);
+        }, 0);
     }, [projectData.appliances, projectData.calcMethod]);
 
     useEffect(() => {
@@ -258,11 +271,25 @@ const CalculatorPage = ({ project, updateProject, goBack, isNew }) => {
                   -moz-appearance: textfield;
                 }
                 @media print {
-                    body { background-color: white !important; }
-                    .print-area, .print-area * { visibility: visible; }
-                    .print-area { position: absolute; left: 0; top: 0; width: 100%; }
-                    .print-hidden { display: none; }
-                    @page { size: A4; margin: 15mm; }
+                    body { 
+                        background-color: white !important; 
+                        -webkit-print-color-adjust: exact; 
+                        print-color-adjust: exact;
+                    }
+                    body * {
+                        visibility: hidden;
+                    }
+                    .print-area, .print-area * { 
+                        visibility: visible; 
+                    }
+                    .print-area { 
+                        position: absolute; 
+                        left: 0; 
+                        top: 0; 
+                        width: 100%; 
+                    }
+                    .print-hidden { display: none !important; }
+                    @page { size: A4; margin: 10mm; }
                 }
             `}</style>
             
@@ -321,7 +348,7 @@ const CalculatorPage = ({ project, updateProject, goBack, isNew }) => {
                             
                             {currentStep === 1 && <div className="grid grid-cols-1 md:grid-cols-2 gap-6"><InputField label="Project Name" type="text" value={projectData.projectName} onChange={e => handleInputChange('projectName', e.target.value)} placeholder="e.g. Client A Residence"/><InputField label="Client Name" type="text" value={projectData.clientName} onChange={e => handleInputChange('clientName', e.target.value)} placeholder="e.g. John Doe"/></div>}
                             
-                            {currentStep === 2 && <div><div className="flex justify-center mb-8"><div className="flex rounded-lg p-1 bg-gray-100 border border-gray-200"><button onClick={() => handleInputChange('calcMethod', 'audit')} className={`px-4 py-2 text-sm font-semibold rounded-md transition-colors ${projectData.calcMethod === 'audit' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500'}`}>Appliance Audit</button><button onClick={() => handleInputChange('calcMethod', 'bill')} className={`px-4 py-2 text-sm font-semibold rounded-md transition-colors ${projectData.calcMethod === 'bill' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500'}`}>From Utility Bill</button></div></div>{projectData.calcMethod === 'audit' ? (<div><div className="space-y-4">{projectData.appliances && projectData.appliances.map(app => (<div key={app.id} className="grid grid-cols-12 gap-x-4 items-end border-b border-gray-200 pb-3"><div className="col-span-12 sm:col-span-4"><InputField label="Appliance" type="text" value={app.name} onChange={e => handleApplianceChange(app.id, 'name', e.target.value)} placeholder="e.g. Fridge" /></div><div className="col-span-4 sm:col-span-2"><InputField label="Qty" type="number" value={app.quantity} onChange={e => handleApplianceChange(app.id, 'quantity', Number(e.target.value))} /></div><div className="col-span-4 sm:col-span-2"><InputField label="Wattage" type="number" value={app.wattage} onChange={e => handleApplianceChange(app.id, 'wattage', Number(e.target.value))} unit="W" /></div><div className="col-span-4 sm:col-span-2"><InputField label="Hours" type="number" value={app.hours} onChange={e => handleApplianceChange(app.id, 'hours', Number(e.target.value))} unit="H" /></div><div className="col-span-12 sm:col-span-2 flex justify-end"><button onClick={() => removeAppliance(app.id)} className="text-gray-400 hover:text-red-500 hover:bg-red-100 p-2 rounded-full"><Trash2 size={18} /></button></div></div>))}</div><button onClick={addAppliance} className="mt-4 flex items-center space-x-2 text-amber-600 font-semibold hover:text-amber-700"><Plus size={18} /><span>Add Appliance</span></button><div className="mt-6 border-t border-gray-200 pt-4 text-right"><p className="text-gray-500">Total Daily Energy Consumption</p><p className=" mt-2 text-xl font-bold text-gray-900">{totalWattHoursFromAudit.toLocaleString()} Wh/day</p><p className="mt-1 text-4xl font-bold text-gray-900 -mt-1">{(totalWattHoursFromAudit / 1000).toFixed(2)} <span className="text-2xl">kWh/day</span></p></div></div>) : (<div className="max-w-md mx-auto"><InputField label="Average Daily Energy Use" type="number" value={projectData.dailyEnergyKwh} onChange={e => handleInputChange('dailyEnergyKwh', e.target.value)} unit="kWh" tooltip="Find this on your monthly electricity bill."/></div>)}</div>}
+                            {currentStep === 2 && <div><div className="flex justify-center mb-8"><div className="flex rounded-lg p-1 bg-gray-100 border border-gray-200"><button onClick={() => handleInputChange('calcMethod', 'audit')} className={`px-4 py-2 text-sm font-semibold rounded-md transition-colors ${projectData.calcMethod === 'audit' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500'}`}>Appliance Audit</button><button onClick={() => handleInputChange('calcMethod', 'bill')} className={`px-4 py-2 text-sm font-semibold rounded-md transition-colors ${projectData.calcMethod === 'bill' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500'}`}>From Utility Bill</button></div></div>{projectData.calcMethod === 'audit' ? (<div><div className="space-y-4">{projectData.appliances && projectData.appliances.map(app => (<div key={app.id} className="grid grid-cols-12 gap-x-4 items-end border-b border-gray-200 pb-3"><div className="col-span-12 sm:col-span-3"><InputField label="Appliance" type="text" value={app.name} onChange={e => handleApplianceChange(app.id, 'name', e.target.value)} placeholder="e.g. Fridge" /></div><div className="col-span-3 sm:col-span-2"><InputField label="Qty" type="number" value={app.quantity} onChange={e => handleApplianceChange(app.id, 'quantity', Number(e.target.value))} /></div><div className="col-span-4 sm:col-span-2"><InputField label="Power" type="number" value={app.wattage} onChange={e => handleApplianceChange(app.id, 'wattage', Number(e.target.value))} /></div><div className="col-span-2 sm:col-span-1"><label className="block text-sm font-medium text-gray-600 mb-2">Unit</label><select value={app.unit || 'W'} onChange={e => handleApplianceChange(app.id, 'unit', e.target.value)} className="w-full px-2 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-gray-900 text-sm"><option value="W">W</option><option value="HP">HP</option></select></div><div className="col-span-3 sm:col-span-2"><InputField label="Hours" type="number" value={app.hours} onChange={e => handleApplianceChange(app.id, 'hours', Number(e.target.value))} unit="H" /></div><div className="col-span-12 sm:col-span-2 flex justify-end"><button onClick={() => removeAppliance(app.id)} className="text-gray-400 hover:text-red-500 hover:bg-red-100 p-2 rounded-full"><Trash2 size={18} /></button></div></div>))}</div><button onClick={addAppliance} className="mt-4 flex items-center space-x-2 text-amber-600 font-semibold hover:text-amber-700"><Plus size={18} /><span>Add Appliance</span></button><div className="mt-6 border-t border-gray-200 pt-4 text-right"><p className="text-gray-500">Total Daily Energy Consumption</p><p className=" mt-2 text-xl font-bold text-gray-900">{totalWattHoursFromAudit.toLocaleString()} Wh/day</p><p className="mt-1 text-4xl font-bold text-gray-900 -mt-1">{(totalWattHoursFromAudit / 1000).toFixed(2)} <span className="text-2xl">kWh/day</span></p></div></div>) : (<div className="max-w-md mx-auto"><InputField label="Average Daily Energy Use" type="number" value={projectData.dailyEnergyKwh} onChange={e => handleInputChange('dailyEnergyKwh', e.target.value)} unit="kWh" tooltip="Find this on your monthly electricity bill."/></div>)}</div>}
 
                             {currentStep === 3 && <div><InputField label="Peak Load" type="number" value={projectData.peakLoad} onChange={e => handleInputChange('peakLoad', e.target.value)} unit="W" tooltip="The maximum total wattage of all appliances you might run at the same time." disabled={!projectData.isPeakLoadCustom && projectData.calcMethod === 'audit'}/><div className="mt-2 flex items-center space-x-3"><input type="checkbox" id="is-peak-load-custom" checked={projectData.isPeakLoadCustom} onChange={e => handleInputChange('isPeakLoadCustom', e.target.checked)} className="h-4 w-4 rounded border-gray-300 text-amber-600 focus:ring-amber-500" /><label htmlFor="is-peak-load-custom" className="text-sm text-gray-600">Manually specify peak load</label></div><div className="mt-8 bg-gray-50 border border-gray-200 p-6 rounded-lg"><h4 className="font-semibold text-gray-800">Select Inverter Size</h4><p className="text-sm text-gray-500 mb-3">Based on {calculations.inverterSizeKva} kVA required (with safety margin & 0.8 PF):</p>{suggestedInverters.length > 0 ? (<div className="grid grid-cols-2 sm:grid-cols-3 gap-2">{suggestedInverters.map((size) => (<button key={size} onClick={() => handleInputChange('selectedInverterKva', size)} className={`p-3 rounded-md text-center transition-colors ${projectData.selectedInverterKva === size ? 'bg-amber-400 text-gray-900 font-bold ring-2 ring-amber-500' : 'bg-white hover:bg-amber-100/50 border border-gray-300'}`}><span className="font-bold text-lg">{size.toLocaleString()}</span> kVA</button>))}</div>) : (<p className="text-gray-500">No standard inverters match. Check Peak Load.</p>)}</div></div>}
                             
@@ -330,49 +357,118 @@ const CalculatorPage = ({ project, updateProject, goBack, isNew }) => {
                             {currentStep === 5 && <div><div className="grid grid-cols-1 md:grid-cols-3 gap-6"><SelectField label="Peak Sun Hours" value={projectData.peakSunHours} onChange={e => handleInputChange('peakSunHours', e.target.value)} options={PSH_OPTIONS} tooltip="The average daily hours of intense sunlight for your location."/><InputField label="System Efficiency" type="number" value={projectData.systemEfficiency} onChange={e => handleInputChange('systemEfficiency', e.target.value)} unit="%" tooltip="Accounts for energy loss in wires, inverter, etc. 80-85% is typical."/><InputField label="Panel Wattage" type="number" value={projectData.panelWattage} onChange={e => handleInputChange('panelWattage', e.target.value)} unit="W" tooltip="Enter the power rating of a single solar panel you plan to use." placeholder="e.g. 450"/></div><div className="mt-6 flex items-center space-x-3"><input type="checkbox" id="has-controller" checked={projectData.hasBuiltInController} onChange={e => handleInputChange('hasBuiltInController', e.target.checked)} className="h-4 w-4 rounded border-gray-300 text-amber-600 focus:ring-amber-500" /><label htmlFor="has-controller" className="text-sm text-gray-600">My inverter has a built-in charge controller (e.g., Hybrid Inverter)</label></div>{!projectData.hasBuiltInController && <div className="mt-8 bg-gray-50 border border-gray-200 p-4 rounded-lg text-center"><p className="text-gray-500">Required Charge Controller Size</p><p className="text-3xl font-bold text-gray-900">{calculations.chargeControllerAmps.toLocaleString()} <span className="text-xl">Amps</span></p><p className="text-xs text-gray-500 mt-1">Based on solar array output, with a 25% safety factor.</p></div>}</div>}
                             
                             {currentStep === 6 && (
-                                <>
-                                    <div className="print-area">
-                                        <div className="text-center mb-10">
-                                            <h2 className="text-3xl font-bold text-gray-900">System Requirement Summary</h2>
-                                            <p className="text-gray-500">A complete overview of your off-grid solar system.</p>
+                                <div className="print-area bg-white p-8 max-w-4xl mx-auto">
+                                    {/* Header */}
+                                    <div className="flex justify-between items-start border-b-2 border-gray-900 pb-6 mb-8">
+                                        <div>
+                                            <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">SOLISYS</h1>
+                                            <p className="text-sm text-gray-500 mt-1 uppercase tracking-wider">Solar System Design Report</p>
                                         </div>
-                                        <div className="border-b border-t border-gray-200 py-4 mb-8">
-                                            <div className="flex justify-between text-gray-900">
-                                                <div className="text-left"><p className="text-sm text-gray-500">Project</p><p className="font-semibold">{projectData.projectName}</p></div>
-                                                <div className="text-left"><p className="text-sm text-gray-500">Client</p><p className="font-semibold">{projectData.clientName || 'N/A'}</p></div>
-                                                <div className="text-left"><p className="text-sm text-gray-500">Date</p><p className="font-semibold">{new Date().toLocaleDateString()}</p></div>
+                                        <div className="text-right">
+                                            <p className="text-sm text-gray-500">Date</p>
+                                            <p className="font-semibold text-gray-900">{new Date().toLocaleDateString()}</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Project Info */}
+                                    <div className="grid grid-cols-2 gap-8 mb-10">
+                                        <div>
+                                            <p className="text-xs text-gray-400 uppercase font-bold tracking-wider mb-1">Project Name</p>
+                                            <p className="text-xl font-bold text-gray-900">{projectData.projectName}</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-xs text-gray-400 uppercase font-bold tracking-wider mb-1">Client</p>
+                                            <p className="text-xl font-bold text-gray-900">{projectData.clientName || 'N/A'}</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Executive Summary Cards */}
+                                    <div className="grid grid-cols-3 gap-4 mb-10">
+                                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                            <p className="text-xs text-gray-500 uppercase font-bold mb-2">Inverter</p>
+                                            <p className="text-3xl font-bold text-amber-600">{projectData.selectedInverterKva} <span className="text-lg text-gray-600">kVA</span></p>
+                                        </div>
+                                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                            <p className="text-xs text-gray-500 uppercase font-bold mb-2">Solar Array</p>
+                                            <p className="text-3xl font-bold text-amber-600">{calculations.actualSystemSizeKw} <span className="text-lg text-gray-600">kW</span></p>
+                                        </div>
+                                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                            <p className="text-xs text-gray-500 uppercase font-bold mb-2">Battery Bank</p>
+                                            <p className="text-3xl font-bold text-amber-600">{(calculations.requiredBatteryCapacityWh / 1000).toFixed(1)} <span className="text-lg text-gray-600">kWh</span></p>
+                                        </div>
+                                    </div>
+
+                                    {/* Technical Details Grid */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 mb-10">
+                                        {/* Load Analysis */}
+                                        <div>
+                                            <h3 className="text-lg font-bold text-gray-900 border-b border-gray-200 pb-2 mb-4">Load Analysis</h3>
+                                            <div className="space-y-3">
+                                                <div className="flex justify-between"><span className="text-gray-600">Daily Energy Consumption</span><span className="font-medium">{projectData.dailyEnergyKwh} kWh</span></div>
+                                                <div className="flex justify-between"><span className="text-gray-600">Peak Load</span><span className="font-medium">{projectData.peakLoad} W</span></div>
+                                                <div className="flex justify-between"><span className="text-gray-600">Days of Autonomy</span><span className="font-medium">{projectData.daysOfAutonomy} Days</span></div>
+                                                <div className="flex justify-between"><span className="text-gray-600">System Voltage</span><span className="font-medium">{projectData.batteryVoltage} V</span></div>
                                             </div>
-                                        </div>
-                                        
-                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                                            <div className="bg-amber-50 border border-amber-200 p-6 rounded-lg text-center"><p className="text-sm font-semibold text-amber-800">Inverter Size</p><p className="text-4xl font-bold text-gray-900">{projectData.selectedInverterKva} <span className="text-2xl">kVA</span></p></div>
-                                            <div className="bg-gray-50 border border-gray-200 p-6 rounded-lg text-center"><p className="text-sm font-semibold text-gray-600">Solar Array</p><p className="text-4xl font-bold text-gray-900">{calculations.actualSystemSizeKw} <span className="text-2xl">kW</span></p></div>
-                                            <div className="bg-gray-50 border border-gray-200 p-6 rounded-lg text-center"><p className="text-sm font-semibold text-gray-600">Battery Capacity</p><p className="text-4xl font-bold text-gray-900">{(calculations.requiredBatteryCapacityWh / 1000).toFixed(2)} <span className="text-2xl">kWh</span></p></div>
                                         </div>
 
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <div className="space-y-4">
-                                                <h3 className="text-lg font-bold text-gray-800 border-b pb-2">Power Core</h3>
-                                                <div className="flex justify-between items-center"><span className="text-gray-500">Daily Energy Need</span><span className="font-bold text-gray-900">{projectData.dailyEnergyKwh} kWh</span></div>
-                                                <div className="flex justify-between items-center"><span className="text-gray-500">Peak Load</span><span className="font-bold text-gray-900">{projectData.peakLoad} W</span></div>
-                                                <div className="flex justify-between items-center"><span className="text-gray-500">System Voltage</span><span className="font-bold text-gray-900">{projectData.batteryVoltage}V</span></div>
-                                            </div>
-                                             <div className="space-y-4">
-                                                <h3 className="text-lg font-bold text-gray-800 border-b pb-2">Energy Storage</h3>
-                                                <div className="flex justify-between items-center"><span className="text-gray-500">Required Capacity (Wh)</span><span className="font-bold text-gray-900">{calculations.requiredBatteryCapacityWh.toLocaleString()} Wh</span></div>
-                                                <div className="flex justify-between items-center"><span className="text-gray-500">Required Capacity (Ah)</span><span className="font-bold text-gray-900">{calculations.requiredBatteryCapacityAh.toLocaleString()} Ah</span></div>
-                                                <div className="flex justify-between items-center"><span className="text-gray-500">Number of Batteries</span><span className="font-bold text-gray-900">{calculations.totalNumberOfBatteries} <span className="text-sm font-normal">({projectData.availableBatteryAh}Ah, {projectData.availableBatteryVoltage}V)</span></span></div>
-                                            </div>
-                                             <div className="space-y-4 md:col-span-2">
-                                                <h3 className="text-lg font-bold text-gray-800 border-b pb-2">Generation & Charging</h3>
-                                                <div className="flex justify-between items-center"><span className="text-gray-500">Number of Panels</span><span className="font-bold text-gray-900">{calculations.numberOfPanels} <span className="text-sm font-normal">({calculations.effectivePanelWattage}W)</span></span></div>
-                                                {!projectData.hasBuiltInController && <div className="flex justify-between items-center"><span className="text-gray-500">Charge Controller</span><span className="font-bold text-gray-900">{calculations.chargeControllerAmps.toLocaleString()} A</span></div>}
-                                                {projectData.hasBuiltInController && <div className="flex justify-between items-center"><span className="text-gray-500">Charge Controller</span><span className="font-bold text-gray-900">Built into Inverter</span></div>}
+                                        {/* Equipment Specs */}
+                                        <div>
+                                            <h3 className="text-lg font-bold text-gray-900 border-b border-gray-200 pb-2 mb-4">Equipment Specifications</h3>
+                                            <div className="space-y-3">
+                                                <div className="flex justify-between"><span className="text-gray-600">Solar Panels ({projectData.panelWattage}W)</span><span className="font-medium">{calculations.numberOfPanels} Units</span></div>
+                                                <div className="flex justify-between"><span className="text-gray-600">Batteries ({projectData.availableBatteryAh}Ah {projectData.availableBatteryVoltage}V)</span><span className="font-medium">{calculations.totalNumberOfBatteries} Units</span></div>
+                                                <div className="flex justify-between"><span className="text-gray-600">Charge Controller</span><span className="font-medium">{projectData.hasBuiltInController ? 'Built-in' : `${calculations.chargeControllerAmps} A`}</span></div>
+                                                <div className="flex justify-between"><span className="text-gray-600">Battery DoD</span><span className="font-medium">{projectData.batteryDoD * 100}%</span></div>
                                             </div>
                                         </div>
                                     </div>
-                                    <button onClick={() => window.print()} className="mt-8 w-full flex items-center justify-center gap-2 bg-gray-800 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-900 transition duration-300 shadow-lg print-hidden"><Printer size={20} /><span>Print Summary</span></button>
-                                </>
+
+                                    {/* Appliance Schedule (Conditional) */}
+                                    {projectData.calcMethod === 'audit' && projectData.appliances && projectData.appliances.length > 0 && (
+                                        <div className="mb-10">
+                                            <h3 className="text-lg font-bold text-gray-900 border-b border-gray-200 pb-2 mb-4">Appliance Load Schedule</h3>
+                                            <table className="w-full text-sm text-left">
+                                                <thead className="bg-gray-50 text-gray-500 font-semibold">
+                                                    <tr>
+                                                        <th className="py-2 px-3">Appliance</th>
+                                                        <th className="py-2 px-3 text-center">Qty</th>
+                                                        <th className="py-2 px-3 text-right">Power</th>
+                                                        <th className="py-2 px-3 text-right">Hours</th>
+                                                        <th className="py-2 px-3 text-right">Daily Wh</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="divide-y divide-gray-100">
+                                                    {projectData.appliances.map((app, idx) => {
+                                                        const watts = app.unit === 'HP' ? app.wattage * 746 : app.wattage;
+                                                        const daily = app.quantity * watts * app.hours;
+                                                        return (
+                                                            <tr key={idx}>
+                                                                <td className="py-2 px-3 text-gray-900">{app.name || 'Unnamed'}</td>
+                                                                <td className="py-2 px-3 text-center text-gray-600">{app.quantity}</td>
+                                                                <td className="py-2 px-3 text-right text-gray-600">{app.wattage} {app.unit || 'W'}</td>
+                                                                <td className="py-2 px-3 text-right text-gray-600">{app.hours}</td>
+                                                                <td className="py-2 px-3 text-right font-medium text-gray-900">{daily.toLocaleString()}</td>
+                                                            </tr>
+                                                        );
+                                                    })}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    )}
+
+                                    {/* Footer */}
+                                    <div className="mt-12 pt-6 border-t-2 border-gray-100 text-center text-xs text-gray-400">
+                                        <p>Designed with Solisys. This report is an estimation based on provided data.</p>
+                                    </div>
+                                    
+                                    {/* Print Button (Hidden in Print) */}
+                                    <div className="mt-8 print-hidden flex justify-center">
+                                         <button onClick={() => window.print()} className="flex items-center gap-2 bg-gray-900 text-white font-bold py-3 px-8 rounded-lg hover:bg-gray-800 transition shadow-lg">
+                                            <Printer size={20} />
+                                            <span>Print Professional Report</span>
+                                        </button>
+                                    </div>
+                                </div>
                             )}
                         </div>
                     </div>
