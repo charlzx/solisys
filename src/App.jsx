@@ -18,16 +18,16 @@ const BATTERY_DOD_OPTIONS = [
     { value: 0.70, label: 'Tubular (70% DoD)' },
     { value: 0.5, label: 'Lead-Acid (50% DoD)' }
 ];
+const CURRENCY_OPTIONS = [
+    { value: 'NGN', label: '₦ Nigerian Naira (NGN)', symbol: '₦' },
+    { value: 'USD', label: '$ US Dollar (USD)', symbol: '$' },
+    { value: 'EUR', label: '€ Euro (EUR)', symbol: '€' },
+    { value: 'GBP', label: '£ British Pound (GBP)', symbol: '£' },
+    { value: 'GHS', label: '₵ Ghanaian Cedi (GHS)', symbol: '₵' },
+    { value: 'KES', label: 'KSh Kenyan Shilling (KES)', symbol: 'KSh' }
+];
 const SYSTEM_VOLTAGE_OPTIONS = [
     { value: 12, label: '12V' }, { value: 24, label: '24V' }, { value: 48, label: '48V' }
-];
-const AVAILABLE_BATTERY_VOLTAGE_OPTIONS = [
-    { value: 2, label: '2V (Cell)' }, 
-    { value: 3.2, label: '3.2V (LFP Cell)' },
-    { value: 6, label: '6V (Block)' }, 
-    { value: 12, label: '12V (Block)' },
-    { value: 24, label: '24V (Pack)' },
-    { value: 48, label: '48V (Rack)' }
 ];
 // Inverter sizes in kVA
 const INVERTER_SIZES_KVA = [1, 1.5, 2, 2.5, 3, 4, 5, 8, 10, 12];
@@ -109,6 +109,12 @@ const Modal = ({ isOpen, onClose, onConfirm, title, children }) => {
 const CalculatorPage = ({ project, updateProject, goBack, isNew }) => {
     const [projectData, setProjectData] = useState(project);
     const [currentStep, setCurrentStep] = useState(1);
+
+    // Get currency symbol
+    const getCurrencySymbol = (currencyCode) => {
+        const currency = CURRENCY_OPTIONS.find(c => c.value === currencyCode);
+        return currency ? currency.symbol : '₦';
+    };
 
     useEffect(() => {
         const handler = setTimeout(() => {
@@ -231,7 +237,7 @@ const CalculatorPage = ({ project, updateProject, goBack, isNew }) => {
         }
     }, [currentStep, suggestedInverters, projectData.selectedInverterKva]);
 
-    const TOTAL_STEPS = 6;
+    const TOTAL_STEPS = 7;
     const isStepValid = useMemo(() => {
       switch(currentStep) {
         case 1: return projectData.projectName?.trim() !== '';
@@ -239,6 +245,7 @@ const CalculatorPage = ({ project, updateProject, goBack, isNew }) => {
         case 3: return projectData.peakLoad > 0;
         case 4: return projectData.daysOfAutonomy > 0 && projectData.availableBatteryAh > 0;
         case 5: return projectData.peakSunHours > 0 && projectData.systemEfficiency > 0 && projectData.panelWattage > 0;
+        case 6: return true;
         default: return true;
       }
     }, [currentStep, projectData, totalWattHoursFromAudit]);
@@ -255,7 +262,8 @@ const CalculatorPage = ({ project, updateProject, goBack, isNew }) => {
         { number: 3, icon: <PowerOff size={20} />, title: 'Inverter Sizing' },
         { number: 4, icon: <BatteryCharging size={20} />, title: 'Battery Sizing' },
         { number: 5, icon: <Sun size={20} />, title: 'Panel Sizing' },
-        { number: 6, icon: <Check size={20} />, title: 'Summary' },
+        { number: 6, icon: <Zap size={20} />, title: 'Cost Estimation' },
+        { number: 7, icon: <Check size={20} />, title: 'Summary' },
     ];
 
     return (
@@ -352,11 +360,244 @@ const CalculatorPage = ({ project, updateProject, goBack, isNew }) => {
 
                             {currentStep === 3 && <div><InputField label="Peak Load" type="number" value={projectData.peakLoad} onChange={e => handleInputChange('peakLoad', e.target.value)} unit="W" tooltip="The maximum total wattage of all appliances you might run at the same time." disabled={!projectData.isPeakLoadCustom && projectData.calcMethod === 'audit'}/><div className="mt-2 flex items-center space-x-3"><input type="checkbox" id="is-peak-load-custom" checked={projectData.isPeakLoadCustom} onChange={e => handleInputChange('isPeakLoadCustom', e.target.checked)} className="h-4 w-4 rounded border-gray-300 text-amber-600 focus:ring-amber-500" /><label htmlFor="is-peak-load-custom" className="text-sm text-gray-600">Manually specify peak load</label></div><div className="mt-8 bg-gray-50 border border-gray-200 p-6 rounded-lg"><h4 className="font-semibold text-gray-800">Select Inverter Size</h4><p className="text-sm text-gray-500 mb-3">Based on {calculations.inverterSizeKva} kVA required (with safety margin & 0.8 PF):</p>{suggestedInverters.length > 0 ? (<div className="grid grid-cols-2 sm:grid-cols-3 gap-2">{suggestedInverters.map((size) => (<button key={size} onClick={() => handleInputChange('selectedInverterKva', size)} className={`p-3 rounded-md text-center transition-colors ${projectData.selectedInverterKva === size ? 'bg-amber-400 text-gray-900 font-bold ring-2 ring-amber-500' : 'bg-white hover:bg-amber-100/50 border border-gray-300'}`}><span className="font-bold text-lg">{size.toLocaleString()}</span> kVA</button>))}</div>) : (<p className="text-gray-500">No standard inverters match. Check Peak Load.</p>)}</div></div>}
                             
-                            {currentStep === 4 && <div><div className="grid grid-cols-1 md:grid-cols-3 gap-6"><InputField label="Days of Autonomy" type="number" value={projectData.daysOfAutonomy} onChange={e => handleInputChange('daysOfAutonomy', e.target.value)} unit="days" tooltip="How many days the system should run on battery power without sun."/><SelectField label="Battery Type (DoD)" value={projectData.batteryDoD} onChange={e => handleInputChange('batteryDoD', e.target.value)} options={BATTERY_DOD_OPTIONS} tooltip="Depth of Discharge: The usable percentage of the battery."/><SelectField label="System Voltage" value={projectData.batteryVoltage} onChange={e => handleInputChange('batteryVoltage', e.target.value)} options={SYSTEM_VOLTAGE_OPTIONS} tooltip="Higher voltage is generally more efficient."/></div><div className="mt-8 pt-6 border-t border-gray-200"><h3 className="text-lg font-semibold text-gray-800 mb-4">Individual Battery Specs</h3><div className="grid grid-cols-1 md:grid-cols-2 gap-6"><InputField label="Single Battery Capacity" type="number" value={projectData.availableBatteryAh} onChange={e => handleInputChange('availableBatteryAh', e.target.value)} unit="Ah" tooltip="The Amp-hour rating of a single battery you plan to use."/><SelectField label="Single Battery Voltage" value={projectData.availableBatteryVoltage} onChange={e => handleInputChange('availableBatteryVoltage', e.target.value)} options={AVAILABLE_BATTERY_VOLTAGE_OPTIONS} tooltip="The voltage of a single battery unit."/></div>{projectData.batteryVoltage > 0 && projectData.availableBatteryVoltage > 0 && projectData.batteryVoltage % projectData.availableBatteryVoltage !== 0 && (<p className="text-red-600 text-sm mt-3">Warning: System Voltage is not a multiple of the single battery voltage.</p>)}</div></div>}
+                            {currentStep === 4 && <div><div className="grid grid-cols-1 md:grid-cols-3 gap-6"><InputField label="Days of Autonomy" type="number" value={projectData.daysOfAutonomy} onChange={e => handleInputChange('daysOfAutonomy', e.target.value)} unit="days" tooltip="How many days the system should run on battery power without sun."/><SelectField label="Battery Type (DoD)" value={projectData.batteryDoD} onChange={e => handleInputChange('batteryDoD', e.target.value)} options={BATTERY_DOD_OPTIONS} tooltip="Depth of Discharge: The usable percentage of the battery."/><SelectField label="System Voltage" value={projectData.batteryVoltage} onChange={e => handleInputChange('batteryVoltage', e.target.value)} options={SYSTEM_VOLTAGE_OPTIONS} tooltip="Higher voltage is generally more efficient."/></div><div className="mt-8 pt-6 border-t border-gray-200"><h3 className="text-lg font-semibold text-gray-800 mb-4">Individual Battery Specs</h3><div className="grid grid-cols-1 md:grid-cols-2 gap-6"><InputField label="Single Battery Capacity" type="number" value={projectData.availableBatteryAh} onChange={e => handleInputChange('availableBatteryAh', e.target.value)} unit="Ah" tooltip="The Amp-hour rating of a single battery you plan to use."/><InputField label="Single Battery Voltage" type="number" value={projectData.availableBatteryVoltage} onChange={e => handleInputChange('availableBatteryVoltage', e.target.value)} unit="V" tooltip="The voltage of a single battery unit (e.g., 12, 24, 25.6, 48, 51.2)" placeholder="e.g. 12 or 51.2"/></div>{projectData.batteryVoltage > 0 && projectData.availableBatteryVoltage > 0 && projectData.batteryVoltage % projectData.availableBatteryVoltage !== 0 && (<p className="text-red-600 text-sm mt-3">Warning: System Voltage is not a multiple of the single battery voltage.</p>)}</div></div>}
 
                             {currentStep === 5 && <div><div className="grid grid-cols-1 md:grid-cols-3 gap-6"><SelectField label="Peak Sun Hours" value={projectData.peakSunHours} onChange={e => handleInputChange('peakSunHours', e.target.value)} options={PSH_OPTIONS} tooltip="The average daily hours of intense sunlight for your location."/><InputField label="System Efficiency" type="number" value={projectData.systemEfficiency} onChange={e => handleInputChange('systemEfficiency', e.target.value)} unit="%" tooltip="Accounts for energy loss in wires, inverter, etc. 80-85% is typical."/><InputField label="Panel Wattage" type="number" value={projectData.panelWattage} onChange={e => handleInputChange('panelWattage', e.target.value)} unit="W" tooltip="Enter the power rating of a single solar panel you plan to use." placeholder="e.g. 450"/></div><div className="mt-6 flex items-center space-x-3"><input type="checkbox" id="has-controller" checked={projectData.hasBuiltInController} onChange={e => handleInputChange('hasBuiltInController', e.target.checked)} className="h-4 w-4 rounded border-gray-300 text-amber-600 focus:ring-amber-500" /><label htmlFor="has-controller" className="text-sm text-gray-600">My inverter has a built-in charge controller (e.g., Hybrid Inverter)</label></div>{!projectData.hasBuiltInController && <div className="mt-8 bg-gray-50 border border-gray-200 p-4 rounded-lg text-center"><p className="text-gray-500">Required Charge Controller Size</p><p className="text-3xl font-bold text-gray-900">{calculations.chargeControllerAmps.toLocaleString()} <span className="text-xl">Amps</span></p><p className="text-xs text-gray-500 mt-1">Based on solar array output, with a 25% safety factor.</p></div>}</div>}
                             
                             {currentStep === 6 && (
+                                <div>
+                                    <SectionHeader title="Cost Estimation" subtitle="Enter component costs to estimate the total system investment." />
+                                    <div className="mb-6">
+                                        <SelectField 
+                                            label="Currency" 
+                                            value={projectData.currency || 'NGN'} 
+                                            onChange={e => handleInputChange('currency', e.target.value)} 
+                                            options={CURRENCY_OPTIONS}
+                                            tooltip="Select your preferred currency for cost calculations"
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <InputField 
+                                            label="Solar Panel Unit Cost" 
+                                            type="number" 
+                                            value={projectData.costPerPanel} 
+                                            onChange={e => handleInputChange('costPerPanel', e.target.value)} 
+                                            placeholder="0.00"
+                                            tooltip={`Price per ${projectData.panelWattage}W panel. Total needed: ${calculations.numberOfPanels} panels`}
+                                        />
+                                        <InputField 
+                                            label="Battery Unit Cost" 
+                                            type="number" 
+                                            value={projectData.costPerBattery} 
+                                            onChange={e => handleInputChange('costPerBattery', e.target.value)} 
+                                            placeholder="0.00"
+                                            tooltip={`Price per ${projectData.availableBatteryAh}Ah battery. Total needed: ${calculations.totalNumberOfBatteries} batteries`}
+                                        />
+                                        <InputField 
+                                            label="Inverter Cost" 
+                                            type="number" 
+                                            value={projectData.inverterCost} 
+                                            onChange={e => handleInputChange('inverterCost', e.target.value)} 
+                                            placeholder="0.00"
+                                            tooltip={`Total cost for ${projectData.selectedInverterKva}kVA inverter`}
+                                        />
+                                        {!projectData.hasBuiltInController && (
+                                            <InputField 
+                                                label="Charge Controller Cost" 
+                                                type="number" 
+                                                value={projectData.controllerCost} 
+                                                onChange={e => handleInputChange('controllerCost', e.target.value)} 
+                                                placeholder="0.00"
+                                                tooltip={`Total cost for ${calculations.chargeControllerAmps}A charge controller`}
+                                            />
+                                        )}
+                                        <InputField 
+                                            label="Installation & Labor Cost" 
+                                            type="number" 
+                                            value={projectData.installationCost} 
+                                            onChange={e => handleInputChange('installationCost', e.target.value)} 
+                                            placeholder="0.00"
+                                            tooltip="Total labor, mounting hardware, and installation costs"
+                                        />
+                                    </div>
+                                    
+                                    {/* Additional Materials Section */}
+                                    <div className="mt-8 pt-6 border-t border-gray-200">
+                                        <h3 className="text-lg font-semibold text-gray-800 mb-4">Additional Materials & Components</h3>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            {/* Solar Cables */}
+                                            <div className="col-span-2 bg-gray-50 p-4 rounded-lg">
+                                                <h4 className="font-semibold text-gray-700 mb-3">Solar Cables (DC)</h4>
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <InputField 
+                                                        label="Cable Length" 
+                                                        type="number" 
+                                                        value={projectData.solarCableLength} 
+                                                        onChange={e => handleInputChange('solarCableLength', e.target.value)} 
+                                                        unit="m"
+                                                        placeholder="0"
+                                                        tooltip="Total length of solar DC cables needed"
+                                                    />
+                                                    <InputField 
+                                                        label="Cost per Meter" 
+                                                        type="number" 
+                                                        value={projectData.solarCableCostPerMeter} 
+                                                        onChange={e => handleInputChange('solarCableCostPerMeter', e.target.value)} 
+                                                        placeholder="0.00"
+                                                        tooltip="Price per meter of solar cable"
+                                                    />
+                                                </div>
+                                                {projectData.solarCableLength > 0 && projectData.solarCableCostPerMeter > 0 && (
+                                                    <p className="text-sm text-gray-600 mt-2">Total: {getCurrencySymbol(projectData.currency)}{(projectData.solarCableLength * projectData.solarCableCostPerMeter).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+                                                )}
+                                            </div>
+                                            
+                                            {/* Electrical Cables */}
+                                            <div className="col-span-2 bg-gray-50 p-4 rounded-lg">
+                                                <h4 className="font-semibold text-gray-700 mb-3">Electrical Cables (AC)</h4>
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <InputField 
+                                                        label="Cable Length" 
+                                                        type="number" 
+                                                        value={projectData.electricalCableLength} 
+                                                        onChange={e => handleInputChange('electricalCableLength', e.target.value)} 
+                                                        unit="m"
+                                                        placeholder="0"
+                                                        tooltip="Total length of AC electrical cables needed"
+                                                    />
+                                                    <InputField 
+                                                        label="Cost per Meter" 
+                                                        type="number" 
+                                                        value={projectData.electricalCableCostPerMeter} 
+                                                        onChange={e => handleInputChange('electricalCableCostPerMeter', e.target.value)} 
+                                                        placeholder="0.00"
+                                                        tooltip="Price per meter of electrical cable"
+                                                    />
+                                                </div>
+                                                {projectData.electricalCableLength > 0 && projectData.electricalCableCostPerMeter > 0 && (
+                                                    <p className="text-sm text-gray-600 mt-2">Total: {getCurrencySymbol(projectData.currency)}{(projectData.electricalCableLength * projectData.electricalCableCostPerMeter).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+                                                )}
+                                            </div>
+                                            
+                                            {/* Other Items */}
+                                            <InputField 
+                                                label="Circuit Breakers" 
+                                                type="number" 
+                                                value={projectData.breakers} 
+                                                onChange={e => handleInputChange('breakers', e.target.value)} 
+                                                placeholder="0.00"
+                                                tooltip="Total cost for all circuit breakers and protection devices"
+                                            />
+                                            <InputField 
+                                                label="Connectors & Terminals" 
+                                                type="number" 
+                                                value={projectData.connectors} 
+                                                onChange={e => handleInputChange('connectors', e.target.value)} 
+                                                placeholder="0.00"
+                                                tooltip="MC4 connectors, battery terminals, lugs, etc."
+                                            />
+                                            <InputField 
+                                                label="Mounting Structure" 
+                                                type="number" 
+                                                value={projectData.mountingStructure} 
+                                                onChange={e => handleInputChange('mountingStructure', e.target.value)} 
+                                                placeholder="0.00"
+                                                tooltip="Rails, brackets, and mounting hardware for panels"
+                                            />
+                                            <InputField 
+                                                label="Permits & Inspection" 
+                                                type="number" 
+                                                value={projectData.permits} 
+                                                onChange={e => handleInputChange('permits', e.target.value)} 
+                                                placeholder="0.00"
+                                                tooltip="Government permits, inspection fees, certifications"
+                                            />
+                                            <InputField 
+                                                label="Other Miscellaneous" 
+                                                type="number" 
+                                                value={projectData.miscOther} 
+                                                onChange={e => handleInputChange('miscOther', e.target.value)} 
+                                                placeholder="0.00"
+                                                tooltip="Any other costs not covered above"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="mt-10 bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 p-8 rounded-xl">
+                                        <h3 className="text-2xl font-bold text-gray-900 mb-6">Cost Summary</h3>
+                                        <div className="space-y-3 mb-6">
+                                            <div className="flex justify-between items-center text-gray-700">
+                                                <span>Solar Panels ({calculations.numberOfPanels} units)</span>
+                                                <span className="font-semibold">{Number(projectData.costPerPanel) > 0 ? `${getCurrencySymbol(projectData.currency)}${(calculations.numberOfPanels * Number(projectData.costPerPanel)).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}` : '-'}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center text-gray-700">
+                                                <span>Batteries ({calculations.totalNumberOfBatteries} units)</span>
+                                                <span className="font-semibold">{Number(projectData.costPerBattery) > 0 ? `${getCurrencySymbol(projectData.currency)}${(calculations.totalNumberOfBatteries * Number(projectData.costPerBattery)).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}` : '-'}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center text-gray-700">
+                                                <span>Inverter ({projectData.selectedInverterKva}kVA)</span>
+                                                <span className="font-semibold">{Number(projectData.inverterCost) > 0 ? `${getCurrencySymbol(projectData.currency)}${Number(projectData.inverterCost).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}` : '-'}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center text-gray-700">
+                                                <span>Charge Controller</span>
+                                                <span className="font-semibold">{projectData.hasBuiltInController ? 'Built-in' : (Number(projectData.controllerCost) > 0 ? `${getCurrencySymbol(projectData.currency)}${Number(projectData.controllerCost).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}` : '-')}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center text-gray-700">
+                                                <span>Installation & Labor</span>
+                                                <span className="font-semibold">{Number(projectData.installationCost) > 0 ? `${getCurrencySymbol(projectData.currency)}${Number(projectData.installationCost).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}` : '-'}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center text-gray-700">
+                                                <span>Solar Cables ({projectData.solarCableLength}m)</span>
+                                                <span className="font-semibold">{(Number(projectData.solarCableLength) > 0 && Number(projectData.solarCableCostPerMeter) > 0) ? `${getCurrencySymbol(projectData.currency)}${(projectData.solarCableLength * projectData.solarCableCostPerMeter).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}` : '-'}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center text-gray-700">
+                                                <span>Electrical Cables ({projectData.electricalCableLength}m)</span>
+                                                <span className="font-semibold">{(Number(projectData.electricalCableLength) > 0 && Number(projectData.electricalCableCostPerMeter) > 0) ? `${getCurrencySymbol(projectData.currency)}${(projectData.electricalCableLength * projectData.electricalCableCostPerMeter).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}` : '-'}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center text-gray-700">
+                                                <span>Circuit Breakers</span>
+                                                <span className="font-semibold">{Number(projectData.breakers) > 0 ? `${getCurrencySymbol(projectData.currency)}${Number(projectData.breakers).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}` : '-'}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center text-gray-700">
+                                                <span>Connectors & Terminals</span>
+                                                <span className="font-semibold">{Number(projectData.connectors) > 0 ? `${getCurrencySymbol(projectData.currency)}${Number(projectData.connectors).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}` : '-'}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center text-gray-700">
+                                                <span>Mounting Structure</span>
+                                                <span className="font-semibold">{Number(projectData.mountingStructure) > 0 ? `${getCurrencySymbol(projectData.currency)}${Number(projectData.mountingStructure).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}` : '-'}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center text-gray-700">
+                                                <span>Permits & Inspection</span>
+                                                <span className="font-semibold">{Number(projectData.permits) > 0 ? `${getCurrencySymbol(projectData.currency)}${Number(projectData.permits).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}` : '-'}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center text-gray-700">
+                                                <span>Other Miscellaneous</span>
+                                                <span className="font-semibold">{Number(projectData.miscOther) > 0 ? `${getCurrencySymbol(projectData.currency)}${Number(projectData.miscOther).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}` : '-'}</span>
+                                            </div>
+                                        </div>
+                                        <div className="pt-4 border-t-2 border-amber-300">
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-xl font-bold text-gray-900">Total System Cost</span>
+                                                <span className="text-3xl font-extrabold text-amber-600">{getCurrencySymbol(projectData.currency)}{(
+                                                    (calculations.numberOfPanels * (Number(projectData.costPerPanel) || 0)) +
+                                                    (calculations.totalNumberOfBatteries * (Number(projectData.costPerBattery) || 0)) +
+                                                    (Number(projectData.inverterCost) || 0) +
+                                                    (projectData.hasBuiltInController ? 0 : (Number(projectData.controllerCost) || 0)) +
+                                                    (Number(projectData.installationCost) || 0) +
+                                                    ((Number(projectData.solarCableLength) || 0) * (Number(projectData.solarCableCostPerMeter) || 0)) +
+                                                    ((Number(projectData.electricalCableLength) || 0) * (Number(projectData.electricalCableCostPerMeter) || 0)) +
+                                                    (Number(projectData.breakers) || 0) +
+                                                    (Number(projectData.connectors) || 0) +
+                                                    (Number(projectData.mountingStructure) || 0) +
+                                                    (Number(projectData.permits) || 0) +
+                                                    (Number(projectData.miscOther) || 0)
+                                                ).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                            
+                            {currentStep === 7 && (
                                 <div className="print-area bg-white p-8 max-w-4xl mx-auto">
                                     {/* Header */}
                                     <div className="flex justify-between items-start border-b-2 border-gray-900 pb-6 mb-8">
@@ -582,6 +823,21 @@ export default function App() {
             selectedInverterKva: 0,
             hasBuiltInController: false,
             isPeakLoadCustom: true,
+            costPerPanel: 0,
+            costPerBattery: 0,
+            inverterCost: 0,
+            controllerCost: 0,
+            installationCost: 0,
+            solarCableLength: 0,
+            solarCableCostPerMeter: 0,
+            electricalCableLength: 0,
+            electricalCableCostPerMeter: 0,
+            breakers: 0,
+            connectors: 0,
+            mountingStructure: 0,
+            permits: 0,
+            miscOther: 0,
+            currency: 'NGN',
             lastUpdated: new Date().toISOString(),
         };
         const updatedProjects = [...projects, newProject];
