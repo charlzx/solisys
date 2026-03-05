@@ -1,7 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap');
+@import "./styles/tokens.css";
+@import "./styles/print.css";
 @import "tailwindcss";
 
+html {
+  background-color: var(--color-bg-base);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--color-bg-base);
+}
+
 #root > div {
-   overflow: hidden;
+  overflow: hidden;
 }
 
 *:focus,
@@ -10,5 +26,103 @@
 }
 
 svg {
-   margin-inline-end: 0;
+  margin-inline-end: 0;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.1);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+select,
+select option {
+  background-color: #18181b;
+  color: #f0f0f5;
+}
+
+select option:checked {
+  background-color: rgba(0, 195, 201, 0.2);
+}
+
+select option:disabled {
+  color: #71717a;
+}
+
+::selection {
+  background-color: var(--color-primary-glow);
+  color: var(--color-primary-400);
+}
+
+.dash-grid {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.dash-grid::before,
+.dash-grid::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.dash-grid::before {
+  background: linear-gradient(to bottom, rgba(255,255,255,0.02) 2px, transparent 2px);
+  background-size: 1px 6px;
+  mask-image: linear-gradient(to right, black 1px, transparent 1px);
+  mask-size: 48px 100%;
+  -webkit-mask-image: linear-gradient(to right, black 1px, transparent 1px);
+  -webkit-mask-size: 48px 100%;
+}
+
+.dash-grid::after {
+  background: linear-gradient(to right, rgba(255,255,255,0.02) 2px, transparent 2px);
+  background-size: 6px 1px;
+  mask-image: linear-gradient(to bottom, black 1px, transparent 1px);
+  mask-size: 100% 48px;
+  -webkit-mask-image: linear-gradient(to bottom, black 1px, transparent 1px);
+  -webkit-mask-size: 100% 48px;
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes kpi-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.animate-shimmer {
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.animate-kpi-pulse {
+  animation: kpi-pulse 150ms ease-out;
 }
