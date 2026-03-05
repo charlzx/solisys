@@ -1,10 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X, Copy, Check, BookOpen, Download } from 'lucide-react';
 import Button from './ui/Button';
 import { downloadInterpretationPDF } from '../lib/export/generateInterpretationPDF';
 
 export default function InterpretModal({ text, onClose, projectName }) {
   const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = prev; };
+  }, []);
 
   const handleCopy = async () => {
     try {

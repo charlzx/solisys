@@ -17,7 +17,7 @@ export default function KpiBlock({
   const valueColor = colorMap[colorState] || colorMap.neutral;
 
   return (
-    <div className={className} style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+    <div className={className} style={{ display: 'flex', flexDirection: 'column', gap: '2px', minWidth: 0 }}>
       <span
         style={{
           fontSize: 'var(--text-xs)',
@@ -26,18 +26,20 @@ export default function KpiBlock({
           color: 'var(--color-text-secondary)',
           fontFamily: 'var(--font-body)',
           fontWeight: 'var(--weight-medium)',
+          wordBreak: 'break-word',
         }}
       >
         {label}
       </span>
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: 'var(--space-1)' }}>
+      <div style={{ display: 'flex', alignItems: 'baseline', gap: 'var(--space-1)', minWidth: 0, flexWrap: 'wrap' }}>
         <span
           style={{
-            fontSize: large ? 'var(--text-3xl)' : 'var(--text-2xl)',
+            fontSize: large ? 'var(--text-2xl)' : 'var(--text-xl)',
             fontFamily: 'var(--font-numeric)',
             fontWeight: 'var(--weight-bold)',
             color: valueColor,
             lineHeight: 'var(--leading-tight)',
+            wordBreak: 'break-word',
             ...(colorState === 'calculating'
               ? { animation: 'kpiPulse 1.5s ease-in-out infinite' }
               : {}),

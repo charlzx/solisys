@@ -396,7 +396,7 @@ export default function BatterySizing({
         gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
         gap: 'var(--space-4)',
       }}>
-        <Card style={{ padding: 'var(--space-4)' }}>
+        <Card style={{ padding: 'var(--space-4)', minWidth: 0, overflow: 'hidden' }}>
           <KpiBlock
             label="Required Capacity"
             value={formatNumber(calculations.requiredBankCapacityWh, 0)}
@@ -404,7 +404,7 @@ export default function BatterySizing({
             colorState={calculations.requiredBankCapacityWh > 0 ? 'valid' : 'neutral'}
           />
         </Card>
-        <Card style={{ padding: 'var(--space-4)' }}>
+        <Card style={{ padding: 'var(--space-4)', minWidth: 0, overflow: 'hidden' }}>
           <KpiBlock
             label="Bank Capacity"
             value={formatNumber(calculations.requiredBankCapacityAh, 0)}
@@ -412,7 +412,7 @@ export default function BatterySizing({
             colorState={calculations.requiredBankCapacityAh > 0 ? 'valid' : 'neutral'}
           />
         </Card>
-        <Card style={{ padding: 'var(--space-4)' }}>
+        <Card style={{ padding: 'var(--space-4)', minWidth: 0, overflow: 'hidden' }}>
           <KpiBlock
             label="Calculated Batteries"
             value={calculations.calculatedBatteries}
@@ -420,7 +420,7 @@ export default function BatterySizing({
             colorState={calculations.calculatedBatteries > 0 ? 'valid' : 'neutral'}
           />
         </Card>
-        <Card style={{ padding: 'var(--space-4)' }}>
+        <Card style={{ padding: 'var(--space-4)', minWidth: 0, overflow: 'hidden' }}>
           <KpiBlock
             label="Configuration"
             value={calculations.batteriesInSeries > 0
