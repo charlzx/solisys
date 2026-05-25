@@ -67,9 +67,11 @@ function Nav({ onToggleTheme, theme, currentPath }: NavProps) {
   return (
     <nav className={`mkt-nav ${scrolled ? 'mkt-nav--scrolled' : ''}`} role="navigation">
       <div className="mkt-nav__inner">
-        {/* Logo */}
-        <a href="/" onClick={(e) => navigateToPath('/', e)} className="mkt-nav__logo" aria-label="Solisys home">
-          <Sun size={22} strokeWidth={2} />
+        <a href="/" onClick={(e) => navigateToPath('/', e)} className="mkt-nav__logo" aria-label="Solisys home" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '22px', height: '22px', color: 'var(--color-accent)', flexShrink: 0 }}>
+            <circle cx="16" cy="16" r="10" stroke="currentColor" strokeWidth="2.5" strokeDasharray="4 2"/>
+            <path d="M17 6L9 17H16L15 26L23 15H16L17 6Z" fill="currentColor"/>
+          </svg>
           <span>Solisys</span>
         </a>
 
@@ -199,7 +201,12 @@ function AppMockup() {
       <div className="mkt-mockup__body">
         {/* Sidebar */}
         <div className="mkt-mockup__sidebar">
-          <div className="mkt-mockup__logo-mini"><Sun size={14} /></div>
+          <div className="mkt-mockup__logo-mini">
+            <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '14px', height: '14px', color: 'var(--color-accent)' }}>
+              <circle cx="16" cy="16" r="10" stroke="currentColor" strokeWidth="2.5" strokeDasharray="4 2"/>
+              <path d="M17 6L9 17H16L15 26L23 15H16L17 6Z" fill="currentColor"/>
+            </svg>
+          </div>
           {['Load Sizing', 'Battery Bank', 'Inverter Sizing', 'Solar Array', 'Wire Sizing'].map((s, i) => (
             <div
               key={s}
@@ -369,8 +376,11 @@ function Footer() {
   return (
     <footer className="mkt-footer" role="contentinfo">
       <div className="mkt-container mkt-footer__inner">
-        <a href="/" onClick={(e) => navigateToPath('/', e)} className="mkt-footer__brand">
-          <Sun size={18} />
+        <a href="/" onClick={(e) => navigateToPath('/', e)} className="mkt-footer__brand" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '18px', height: '18px', color: 'var(--color-accent)', flexShrink: 0 }}>
+            <circle cx="16" cy="16" r="10" stroke="currentColor" strokeWidth="2.5" strokeDasharray="4 2"/>
+            <path d="M17 6L9 17H16L15 26L23 15H16L17 6Z" fill="currentColor"/>
+          </svg>
           <span>Solisys</span>
         </a>
         <p className="mkt-footer__copy">
@@ -534,8 +544,11 @@ function WidgetPage() {
             {/* Render Simulated Widget inside Shadow-like box */}
             <div className="widget-mock">
               <div className="widget-mock__header" style={{ borderTopColor: accentColor }}>
-                <div className="widget-mock__title-group">
-                  <Sun size={18} style={{ color: accentColor }} />
+                <div className="widget-mock__title-group" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '18px', height: '18px', color: accentColor, flexShrink: 0 }}>
+                    <circle cx="16" cy="16" r="10" stroke="currentColor" strokeWidth="2.5" strokeDasharray="4 2"/>
+                    <path d="M17 6L9 17H16L15 26L23 15H16L17 6Z" fill="currentColor"/>
+                  </svg>
                   <span className="widget-mock__title">Solar Sizing Tool</span>
                 </div>
                 <span className="widget-mock__company">{companyName}</span>

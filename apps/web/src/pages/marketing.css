@@ -147,7 +147,7 @@
   left: 50%;
   transform: translateX(-50%);
   width: calc(100% - var(--space-8));
-  max-width: 1200px;
+  max-width: 860px;
   z-index: 100;
   background: rgba(10, 31, 13, 0.4);
   backdrop-filter: blur(16px);

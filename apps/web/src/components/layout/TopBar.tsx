@@ -98,18 +98,23 @@ export default function TopBar({
 
         {!isMobile && (
           <>
-            <span
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: '15px',
-                fontWeight: 'var(--weight-medium)',
-                color: 'var(--color-primary-500)',
-                letterSpacing: 'var(--tracking-tight)',
-                flexShrink: 0,
-              }}
-            >
-              SOLISYS
-            </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', flexShrink: 0 }}>
+              <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '18px', height: '18px', color: 'var(--color-primary-500)', flexShrink: 0 }}>
+                <circle cx="16" cy="16" r="10" stroke="currentColor" strokeWidth="2.5" strokeDasharray="4 2"/>
+                <path d="M17 6L9 17H16L15 26L23 15H16L17 6Z" fill="currentColor"/>
+              </svg>
+              <span
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: '15px',
+                  fontWeight: 'var(--weight-medium)',
+                  color: 'var(--color-primary-500)',
+                  letterSpacing: 'var(--tracking-tight)',
+                }}
+              >
+                SOLISYS
+              </span>
+            </div>
 
             <span style={{ color: 'var(--color-border-subtle)', flexShrink: 0 }}>|</span>
           </>
