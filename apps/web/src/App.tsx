@@ -64,8 +64,12 @@ function AppInner() {
     setProjects(loadProjectsFromStorage());
   }, []);
 
-  const handleNewProject = useCallback(() => {
-    const newProject = createDefaultProject({ projectName: 'Untitled Project' });
+  const handleNewProject = useCallback((projectData?: { projectName: string; clientName?: string; sizingMode?: 'simple' | 'pro' }) => {
+    const newProject = createDefaultProject({
+      projectName: projectData?.projectName || 'Untitled Project',
+      clientName: projectData?.clientName || '',
+      sizingMode: projectData?.sizingMode || 'pro',
+    });
     const updated = [...projects, newProject];
     saveProjectsToStorage(updated);
     setProjects(updated);

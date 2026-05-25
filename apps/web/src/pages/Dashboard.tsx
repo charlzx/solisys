@@ -19,6 +19,25 @@ export default function Dashboard({ projects = [], onOpenProject, onNewProject, 
   const [compareSelection, setCompareSelection] = useState([]);
   const [compareOpen, setCompareOpen] = useState(false);
 
+  const [isNewProjectModalOpen, setIsNewProjectModalOpen] = useState(false);
+  const [newProjectName, setNewProjectName] = useState('');
+  const [newClientName, setNewClientName] = useState('');
+  const [newProjectMode, setNewProjectMode] = useState<'simple' | 'pro'>('pro');
+
+  const handleCreateProjectSubmit = () => {
+    const name = newProjectName.trim();
+    if (!name) return;
+    onNewProject?.({
+      projectName: name,
+      clientName: newClientName.trim(),
+      sizingMode: newProjectMode,
+    });
+    setIsNewProjectModalOpen(false);
+    setNewProjectName('');
+    setNewClientName('');
+    setNewProjectMode('pro');
+  };
+
   const handleToggleCompare = () => {
     if (compareMode) {
       setCompareMode(false);

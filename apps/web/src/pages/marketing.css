@@ -10,24 +10,55 @@
   min-height: 100dvh;
   background-color: var(--color-bg);
   color: var(--color-text-primary);
-  font-family: 'DM Sans', var(--font-body), system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: var(--font-body), system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   position: relative;
   overflow-x: hidden;
 }
 
-/* Universal typography overrides to match app page premium feel */
-.mkt-section-title,
-.mkt-hero__headline,
-.mkt-feature-card__title,
-.mkt-cta__title,
-.wt-step h4,
-.pricing-card h3,
-.mkt-nav__logo,
-.mkt-footer__brand,
-.config-panel__title {
-  font-family: 'Plus Jakarta Sans', var(--font-display), system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
-  letter-spacing: -0.025em !important;
+/* Global typography resets under .mkt-root for editorial SaaS feel */
+.mkt-root h1,
+.mkt-root h2,
+.mkt-root .mkt-hero__headline,
+.mkt-root .mkt-section-title,
+.mkt-root .mkt-cta__title {
+  font-family: var(--font-display), system-ui, sans-serif !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.035em !important;
+  line-height: var(--leading-tight) !important;
+}
+
+.mkt-root h3,
+.mkt-root h4,
+.mkt-root .mkt-feature-card__title,
+.mkt-root .wt-step h4,
+.mkt-root .pricing-card h3,
+.mkt-root .config-panel__title {
+  font-family: var(--font-display), system-ui, sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+  line-height: var(--leading-snug) !important;
+}
+
+.mkt-root h5,
+.mkt-root h6,
+.mkt-root .mkt-nav__logo,
+.mkt-root .mkt-footer__brand,
+.mkt-root .mkt-mockup__section-title {
+  font-family: var(--font-display), system-ui, sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.015em !important;
+}
+
+.mkt-root p,
+.mkt-root .mkt-section-sub,
+.mkt-root .mkt-hero__sub,
+.mkt-root .mkt-cta__sub,
+.mkt-root .mkt-feature-card__desc {
+  font-family: var(--font-body), system-ui, sans-serif;
+  line-height: var(--leading-relaxed);
+  letter-spacing: -0.01em;
+  color: var(--color-text-secondary);
 }
 
 .mkt-container {
@@ -55,7 +86,7 @@
   background: var(--color-accent-muted);
   color: var(--color-accent);
   border: 1px solid rgba(181, 240, 80, 0.15);
-  font-family: 'DM Sans', var(--font-body), sans-serif;
+  font-family: var(--font-body), sans-serif;
   font-size: var(--text-xs);
   font-weight: 600;
   letter-spacing: var(--tracking-wide);
@@ -98,7 +129,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  font-family: 'DM Sans', var(--font-body), sans-serif;
+  font-family: var(--font-body), sans-serif;
   font-weight: 600;
   border: none;
   border-radius: var(--radius-full);
@@ -313,11 +344,7 @@
 }
 
 .mkt-hero__headline {
-  font-family: var(--font-display);
   font-size: var(--text-display-lg);
-  font-weight: 800;
-  line-height: var(--leading-tight);
-  letter-spacing: var(--tracking-tight);
   color: var(--color-text-primary);
   margin: 0;
 }
@@ -334,10 +361,9 @@
 }
 
 .mkt-hero__sub {
-  font-size: var(--text-lg);
+  font-size: var(--text-xl);
   color: var(--color-text-secondary);
-  line-height: var(--leading-relaxed);
-  max-width: 560px;
+  max-width: 600px;
   margin: 0;
 }
 
