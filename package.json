@@ -1,0 +1,19 @@
+{
+  "name": "solisys",
+  "private": true,
+  "packageManager": "pnpm@11.2.2",
+  "scripts": {
+    "dev": "turbo run dev --filter=@solisys/web",
+    "build": "turbo run build",
+    "build:web": "turbo run build --filter=@solisys/web",
+    "build:calc": "turbo run build --filter=@solisys/calc",
+    "build:widget": "turbo run build --filter=@solisys/widget",
+    "type-check": "turbo run type-check",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "clean": "turbo run clean"
+  },
+  "devDependencies": {
+    "turbo": "^2.3.0"
+  }
+}
