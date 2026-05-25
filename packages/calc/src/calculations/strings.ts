@@ -99,7 +99,7 @@ export function calculateChargeControllerAmps(
   const recommended = (STANDARD_CONTROLLER_SIZES as readonly number[]).find(
     (s) => s >= rawAmps,
   );
-  return recommended ?? STANDARD_CONTROLLER_SIZES[STANDARD_CONTROLLER_SIZES.length - 1];
+  return recommended ?? (STANDARD_CONTROLLER_SIZES[STANDARD_CONTROLLER_SIZES.length - 1] as number);
 }
 
 export function calculateChargeControllerAmpsPWM(
@@ -115,7 +115,7 @@ export function calculateChargeControllerAmpsPWM(
   const recommended = (STANDARD_CONTROLLER_SIZES as readonly number[]).find(
     (s) => s >= rawAmps,
   );
-  return recommended ?? STANDARD_CONTROLLER_SIZES[STANDARD_CONTROLLER_SIZES.length - 1];
+  return recommended ?? (STANDARD_CONTROLLER_SIZES[STANDARD_CONTROLLER_SIZES.length - 1] as number);
 }
 
 export function calculateStringDesign(

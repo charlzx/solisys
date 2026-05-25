@@ -23,5 +23,5 @@ export function findRecommendedInverterSize(requiredKva: number): number {
   if (kva <= 0) return 0;
 
   const recommended = (INVERTER_SIZES_KVA as readonly number[]).find((s) => s >= kva);
-  return recommended ?? INVERTER_SIZES_KVA[INVERTER_SIZES_KVA.length - 1];
+  return recommended ?? (INVERTER_SIZES_KVA[INVERTER_SIZES_KVA.length - 1] as number);
 }
