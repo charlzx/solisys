@@ -1,4 +1,4 @@
-import { FileDown, FileJson, FileSpreadsheet } from 'lucide-react';
+import { FilePdf as FileDown, FileCode as FileJson, FileCsv as FileSpreadsheet } from '@phosphor-icons/react';
 import SectionHeader from '../ui/SectionHeader';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
@@ -15,7 +15,7 @@ function DetailRow({ label, value }) {
       justifyContent: 'space-between',
       alignItems: 'center',
       padding: 'var(--space-2) 0',
-      borderBottom: '1px solid rgba(255,255,255,0.04)',
+      borderBottom: '1px solid var(--color-border-subtle)',
     }}>
       <span style={{
         fontSize: 'var(--text-xs)',
@@ -85,10 +85,10 @@ export default function ExportSection({
           </h3>
 
           <div className="print-area" style={{
-            background: 'var(--color-bg-elevated)',
+            background: 'var(--color-surface-raised)',
             borderRadius: 'var(--radius-md)',
             padding: isMobile ? 'var(--space-4)' : 'var(--space-8)',
-            border: '1px solid var(--color-border-default)',
+            border: '1px solid var(--color-border)',
           }}>
             <div style={{ textAlign: 'center', marginBottom: isMobile ? 'var(--space-4)' : 'var(--space-8)' }}>
               <div style={{
@@ -135,8 +135,8 @@ export default function ExportSection({
             {reportData.systemTypeLabel && (
               <div style={{
                 display: 'inline-block',
-                background: 'rgba(0, 195, 201, 0.1)',
-                border: '1px solid rgba(0, 195, 201, 0.2)',
+                background: 'color-mix(in srgb, var(--color-primary-500) 10%, transparent)',
+                border: '1px solid var(--color-border)',
                 borderRadius: 'var(--radius-sm)',
                 padding: '2px 10px',
                 fontSize: 'var(--text-xs)',
@@ -164,10 +164,10 @@ export default function ExportSection({
 
             {isMobile ? (
               <div style={{
-                background: 'rgba(255,255,255,0.02)',
+                background: 'var(--color-surface)',
                 borderRadius: 'var(--radius-sm)',
                 padding: 'var(--space-2) var(--space-3)',
-                border: '1px solid rgba(255,255,255,0.05)',
+                border: '1px solid var(--color-border-subtle)',
               }}>
                 <DetailRow label="Daily Load" value={`${reportData.summary.dailyLoadKwh} kWh`} />
                 <DetailRow label="Peak Load" value={`${reportData.summary.peakLoadW} W`} />

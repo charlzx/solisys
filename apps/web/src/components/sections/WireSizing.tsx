@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Cable, ChevronDown, ChevronUp } from 'lucide-react';
+import { Plug, CaretDown, CaretUp } from '@phosphor-icons/react';
 import SectionHeader from '../ui/SectionHeader';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
@@ -59,7 +59,7 @@ function WireSubsection({ title, description, current, currentLabel, cableLength
         gap: 'var(--space-4)',
         marginTop: 'var(--space-4)',
         padding: 'var(--space-4)',
-        background: 'var(--color-bg-elevated)',
+        background: 'var(--color-bg-deep)',
         borderRadius: 'var(--radius-sm)',
       }}>
         <div>
@@ -160,7 +160,7 @@ export default function WireSizing({
               alignItems: 'center',
               gap: 'var(--space-2)',
             }}>
-              <Cable size={18} style={{ color: 'var(--color-primary-500)' }} />
+              <Plug size={18} style={{ color: 'var(--color-primary-500)' }} />
               Wire Sizing Calculator
             </div>
             <div style={{
@@ -171,7 +171,7 @@ export default function WireSizing({
               {expanded ? 'Calculate cable sizes for all circuits' : 'Optional — expand to calculate cable sizes and voltage drop'}
             </div>
           </div>
-          {expanded ? <ChevronUp size={20} style={{ color: 'var(--color-text-muted)' }} /> : <ChevronDown size={20} style={{ color: 'var(--color-text-muted)' }} />}
+          {expanded ? <CaretUp size={20} style={{ color: 'var(--color-text-muted)' }} /> : <CaretDown size={20} style={{ color: 'var(--color-text-muted)' }} />}
         </div>
       </Card>
 
@@ -225,9 +225,9 @@ export default function WireSizing({
               onClick={() => setShowRefTable(!showRefTable)}
               style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}
             >
-              <Cable size={16} />
+              <Plug size={16} />
               Cable Size Reference Table
-              {showRefTable ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+              {showRefTable ? <CaretUp size={16} /> : <CaretDown size={16} />}
             </Button>
 
             {showRefTable && (
@@ -243,7 +243,7 @@ export default function WireSizing({
                           textTransform: 'uppercase',
                           letterSpacing: 'var(--tracking-wide)',
                           color: 'var(--color-text-secondary)',
-                          background: 'var(--color-bg-elevated)',
+                          background: 'var(--color-bg-deep)',
                           fontWeight: 'var(--weight-medium)',
                           whiteSpace: 'nowrap',
                         }}>

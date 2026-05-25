@@ -1,4 +1,4 @@
-import { X } from 'lucide-react';
+import { X } from '@phosphor-icons/react';
 import Button from '../ui/Button';
 import { formatNumber, formatCurrency } from '../../lib/utils';
 import { calculateRequiredInverterKva, findRecommendedInverterSize } from '../../lib/calculations';
@@ -81,7 +81,7 @@ function CompareRow({ label, valA, valB, unit, format, currency }) {
       gridTemplateColumns: '1fr 1fr 1fr',
       gap: 'var(--space-3)',
       padding: 'var(--space-3) 0',
-      borderBottom: '1px solid rgba(255,255,255,0.05)',
+      borderBottom: '1px solid var(--color-border-subtle)',
       alignItems: 'center',
     }}>
       <div style={{
@@ -153,7 +153,7 @@ export default function CompareModal({ isOpen, onClose, projectA, projectB }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'rgba(0, 0, 0, 0.7)',
+        background: 'var(--color-overlay)',
         backdropFilter: 'blur(4px)',
         animation: 'modalOverlayIn var(--duration-normal) var(--ease-default)',
       }}
@@ -163,8 +163,8 @@ export default function CompareModal({ isOpen, onClose, projectA, projectB }) {
     >
       <div
         style={{
-          background: 'var(--color-bg-surface)',
-          border: '1px solid var(--color-border-strong)',
+          background: 'var(--color-surface)',
+          border: '1px solid var(--color-border)',
           borderRadius: 'var(--radius-lg)',
           width: '90vw',
           maxWidth: '560px',
@@ -172,6 +172,7 @@ export default function CompareModal({ isOpen, onClose, projectA, projectB }) {
           overflow: 'auto',
           padding: 'var(--space-8)',
           animation: 'modalPanelIn var(--duration-normal) var(--ease-spring)',
+          boxShadow: 'var(--shadow-xl)',
         }}
       >
         <div style={{
@@ -200,7 +201,7 @@ export default function CompareModal({ isOpen, onClose, projectA, projectB }) {
           gap: 'var(--space-3)',
           marginBottom: 'var(--space-4)',
           paddingBottom: 'var(--space-3)',
-          borderBottom: '1px solid rgba(255,255,255,0.10)',
+          borderBottom: '1px solid var(--color-border-subtle)',
         }}>
           <div style={{
             fontSize: 'var(--text-xs)',

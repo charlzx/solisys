@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, Copy, Check, BookOpen, Download } from 'lucide-react';
+import { X, Copy, Check, BookOpen, Download } from '@phosphor-icons/react';
 import Button from './ui/Button';
 import { downloadInterpretationPDF } from '../lib/export/generateInterpretationPDF';
 
@@ -55,7 +55,7 @@ export default function InterpretModal({ text, onClose, projectName }) {
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'rgba(0,0,0,0.7)',
+          background: 'var(--color-overlay)',
           backdropFilter: 'blur(4px)',
         }}
       />
@@ -66,18 +66,19 @@ export default function InterpretModal({ text, onClose, projectName }) {
           width: '100%',
           maxWidth: '680px',
           maxHeight: '85vh',
-          background: '#0f0f11',
-          border: '1px solid rgba(255,255,255,0.10)',
+          background: 'var(--color-bg)',
+          border: '1px solid var(--color-border)',
           borderRadius: 'var(--radius-xl)',
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
+          boxShadow: 'var(--shadow-xl)',
         }}
       >
         <div
           style={{
             padding: 'var(--space-4) var(--space-5)',
-            borderBottom: '1px solid rgba(255,255,255,0.08)',
+            borderBottom: '1px solid var(--color-border-subtle)',
           }}
         >
           <div style={{
@@ -169,7 +170,7 @@ export default function InterpretModal({ text, onClose, projectName }) {
                   lineHeight: '1.7',
                   margin: `0 0 var(--space-2) 0`,
                   ...(para.startsWith('Note:') || para.startsWith('Tip:') ? {
-                    background: 'rgba(234, 179, 8, 0.08)',
+                    background: 'var(--color-warning-surface)',
                     padding: 'var(--space-2) var(--space-3)',
                     borderRadius: 'var(--radius-sm)',
                     borderLeft: '3px solid var(--color-warning)',

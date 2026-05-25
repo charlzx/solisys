@@ -20,6 +20,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@phosphor-icons/react':
+        specifier: ^2.1.7
+        version: 2.1.10(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@solisys/calc':
         specifier: workspace:*
         version: link:../../packages/calc
@@ -417,6 +420,13 @@ packages:
 
   '@oxc-project/types@0.132.0':
     resolution: {integrity: sha512-FESMOxil5Se014ui/Eq8fT5uHJo6nIRwH0PfJrZJXs6Gek3ZVFOrpUv3YIZT20m+extU98Hg1Ym72U58rlsxUQ==}
+
+  '@phosphor-icons/react@2.1.10':
+    resolution: {integrity: sha512-vt8Tvq8GLjheAZZYa+YG/pW7HDbov8El/MANW8pOAz4eGxrwhnbfrQZq0Cp4q8zBEu8NIhHdnr+r8thnfRSNYA==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>= 16.8'
+      react-dom: '>= 16.8'
 
   '@rolldown/binding-android-arm64@1.0.2':
     resolution: {integrity: sha512-ZS4D1JPGn/MYQN/SYDWftIE/nVsM8j/AFOYEzAoOE2O3NktQOZru+/vYXGbR/qtdLdIfGCP0lcoJiYVzsEz+iQ==}
@@ -2180,6 +2190,11 @@ snapshots:
     optional: true
 
   '@oxc-project/types@0.132.0': {}
+
+  '@phosphor-icons/react@2.1.10(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
+    dependencies:
+      react: 19.2.3
+      react-dom: 19.2.3(react@19.2.3)
 
   '@rolldown/binding-android-arm64@1.0.2':
     optional: true

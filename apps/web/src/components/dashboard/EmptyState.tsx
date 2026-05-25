@@ -1,4 +1,4 @@
-import { Sun } from 'lucide-react';
+import { Sun } from '@phosphor-icons/react';
 
 export default function EmptyState() {
   return (
@@ -14,7 +14,7 @@ export default function EmptyState() {
         width: '64px',
         height: '64px',
         borderRadius: 'var(--radius-lg)',
-        background: 'rgba(0, 195, 201, 0.1)',
+        background: 'color-mix(in srgb, var(--color-primary-500) 10%, transparent)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

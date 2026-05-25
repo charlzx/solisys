@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from 'react';
-import { ZoomIn, ZoomOut, RotateCcw, Download } from 'lucide-react';
+import { MagnifyingGlassPlus as ZoomIn, MagnifyingGlassMinus as ZoomOut, ArrowCounterClockwise as RotateCcw, DownloadSimple as Download } from '@phosphor-icons/react';
 import SectionHeader from '../ui/SectionHeader';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
@@ -390,7 +390,7 @@ export default function Diagram({
               color: 'var(--color-text-muted)',
               fontFamily: 'var(--font-numeric)',
               marginLeft: 'var(--space-1)',
-              background: 'rgba(255,255,255,0.05)',
+              background: 'color-mix(in srgb, var(--color-text-primary) 5%, transparent)',
               padding: '2px 8px',
               borderRadius: 'var(--radius-sm)',
             }}>
@@ -417,7 +417,7 @@ export default function Diagram({
           WebkitOverflowScrolling: 'touch',
           background: COLORS.bg,
           borderRadius: 'var(--radius-md)',
-          border: '1px solid rgba(255,255,255,0.05)',
+          border: '1px solid var(--color-border-subtle)',
           padding: 'var(--space-4)',
           display: 'flex',
           justifyContent: 'flex-start',

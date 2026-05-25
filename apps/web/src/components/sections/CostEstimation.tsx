@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronUp, DollarSign } from 'lucide-react';
+import { CaretDown, CaretUp, CurrencyDollar as DollarSign } from '@phosphor-icons/react';
 import SectionHeader from '../ui/SectionHeader';
 import Card from '../ui/Card';
 import InputField from '../ui/InputField';
@@ -180,7 +180,7 @@ export default function CostEstimation({
               {expanded ? 'Click to collapse' : 'Cost estimation is optional. Expand to enter component prices.'}
             </div>
           </div>
-          {expanded ? <ChevronUp size={18} color="var(--color-text-muted)" /> : <ChevronDown size={18} color="var(--color-text-muted)" />}
+          {expanded ? <CaretUp size={18} style={{ color: "var(--color-text-muted)" }} /> : <CaretDown size={18} style={{ color: "var(--color-text-muted)" }} />}
         </div>
       </Card>
 
@@ -210,7 +210,7 @@ export default function CostEstimation({
                         textTransform: 'uppercase',
                         letterSpacing: 'var(--tracking-wide)',
                         color: 'var(--color-text-secondary)',
-                        background: 'var(--color-bg-elevated)',
+                        background: 'var(--color-surface-raised)',
                         fontWeight: 'var(--weight-medium)',
                         fontFamily: 'var(--font-body)',
                         whiteSpace: 'nowrap',
@@ -234,24 +234,24 @@ export default function CostEstimation({
                       </td>
                       <td style={{ padding: 'var(--space-2) var(--space-3)', textAlign: 'right' }}>
                         {row.hasQtyInput ? (
-                          <input
-                            type="number"
-                            value={row.qty || ''}
-                            onChange={(e) => updateField(row.qtyField, Number(e.target.value))}
-                            style={{
-                              width: '70px',
-                              background: 'var(--color-bg-elevated)',
-                              border: '1px solid var(--color-border-default)',
-                              borderRadius: 'var(--radius-sm)',
-                              color: 'var(--color-text-primary)',
-                              fontFamily: 'var(--font-numeric)',
-                              fontSize: 'var(--text-sm)',
-                              padding: 'var(--space-1) var(--space-2)',
-                              textAlign: 'right',
-                              outline: 'none',
-                            }}
-                            min={0}
-                          />
+                           <input
+                             type="number"
+                             value={row.qty || ''}
+                             onChange={(e) => updateField(row.qtyField, Number(e.target.value))}
+                             style={{
+                               width: '70px',
+                               background: 'var(--color-surface-raised)',
+                               border: '1px solid var(--color-border-subtle)',
+                               borderRadius: 'var(--radius-sm)',
+                               color: 'var(--color-text-primary)',
+                               fontFamily: 'var(--font-numeric)',
+                               fontSize: 'var(--text-sm)',
+                               padding: 'var(--space-1) var(--space-2)',
+                               textAlign: 'right',
+                               outline: 'none',
+                             }}
+                             min={0}
+                           />
                         ) : (
                           <span style={{
                             fontFamily: 'var(--font-numeric)',
@@ -272,8 +272,8 @@ export default function CostEstimation({
                             placeholder="0"
                             style={{
                               width: '90px',
-                              background: 'var(--color-bg-elevated)',
-                              border: '1px solid var(--color-border-default)',
+                              background: 'var(--color-surface-raised)',
+                              border: '1px solid var(--color-border-subtle)',
                               borderRadius: 'var(--radius-sm)',
                               color: 'var(--color-text-primary)',
                               fontFamily: 'var(--font-numeric)',

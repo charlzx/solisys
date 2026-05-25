@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Search, Plus, Settings, Sun, ArrowRight, ArrowUpDown, GitCompare } from 'lucide-react';
+import { MagnifyingGlass as Search, Plus, Gear as Settings, Sun, Moon, ArrowRight, ArrowsDownUp as ArrowUpDown, GitDiff } from '@phosphor-icons/react';
 import Button from '../components/ui/Button';
 import InputField from '../components/ui/InputField';
 import Modal from '../components/ui/Modal';
@@ -7,7 +7,7 @@ import ProjectCard from '../components/dashboard/ProjectCard';
 import EmptyState from '../components/dashboard/EmptyState';
 import CompareModal from '../components/dashboard/CompareModal';
 
-export default function Dashboard({ projects = [], onOpenProject, onNewProject, onDeleteProject, onUpdateProject, onDuplicateProject, onOpenSettings }) {
+export default function Dashboard({ projects = [], onOpenProject, onNewProject, onDeleteProject, onUpdateProject, onDuplicateProject, onOpenSettings, theme = 'dark', onToggleTheme }) {
   const [search, setSearch] = useState('');
   const [deleteId, setDeleteId] = useState(null);
   const [editId, setEditId] = useState(null);
@@ -113,9 +113,14 @@ export default function Dashboard({ projects = [], onOpenProject, onNewProject, 
             paddingTop: 'var(--space-8)',
           }}>
             <div />
-            <Button variant="ghost" onClick={onOpenSettings} title="Settings">
-              <Settings size={18} />
-            </Button>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <Button variant="ghost" onClick={onToggleTheme} title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
+                {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+              </Button>
+              <Button variant="ghost" onClick={onOpenSettings} title="Settings">
+                <Settings size={18} />
+              </Button>
+            </div>
           </div>
 
           <div style={{ textAlign: 'center', marginBottom: 'var(--space-16)' }}>
@@ -127,7 +132,7 @@ export default function Dashboard({ projects = [], onOpenProject, onNewProject, 
                 transform: 'translate(-50%, -50%)',
                 width: '300px',
                 height: '120px',
-                background: 'rgba(0, 195, 201, 0.08)',
+                background: 'color-mix(in srgb, var(--color-accent) 8%, transparent)',
                 filter: 'blur(60px)',
                 borderRadius: '50%',
                 pointerEvents: 'none',
@@ -188,7 +193,7 @@ export default function Dashboard({ projects = [], onOpenProject, onNewProject, 
                   left: 'var(--space-3)',
                   top: '50%',
                   transform: 'translateY(-50%)',
-                  color: searchFocused ? 'var(--color-primary-500)' : 'var(--color-text-muted)',
+                  color: searchFocused ? 'var(--color-accent)' : 'var(--color-text-muted)',
                   pointerEvents: 'none',
                   transition: 'color var(--duration-normal) var(--ease-default)',
                 }}
@@ -205,8 +210,8 @@ export default function Dashboard({ projects = [], onOpenProject, onNewProject, 
                   height: '42px',
                   paddingLeft: 'var(--space-10)',
                   paddingRight: 'var(--space-4)',
-                  background: 'rgba(255,255,255,0.05)',
-                  border: `1px solid ${searchFocused ? 'var(--color-primary-500)' : 'rgba(255,255,255,0.10)'}`,
+                  background: 'color-mix(in srgb, var(--color-text-primary) 5%, transparent)',
+                  border: `1px solid ${searchFocused ? 'var(--color-accent)' : 'var(--color-border)'}`,
                   borderRadius: 'var(--radius-md)',
                   color: 'var(--color-text-primary)',
                   fontFamily: 'var(--font-body)',
@@ -226,8 +231,8 @@ export default function Dashboard({ projects = [], onOpenProject, onNewProject, 
                 style={{
                   height: '42px',
                   padding: '0 var(--space-8) 0 var(--space-3)',
-                  background: 'rgba(255,255,255,0.05)',
-                  border: '1px solid rgba(255,255,255,0.10)',
+                  background: 'color-mix(in srgb, var(--color-text-primary) 5%, transparent)',
+                  border: '1px solid var(--color-border)',
                   borderRadius: 'var(--radius-md)',
                   color: 'var(--color-text-secondary)',
                   fontFamily: 'var(--font-body)',
@@ -236,7 +241,7 @@ export default function Dashboard({ projects = [], onOpenProject, onNewProject, 
                   cursor: 'pointer',
                   appearance: 'none',
                   WebkitAppearance: 'none',
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.4)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`,
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(128,128,128,0.5)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`,
                   backgroundRepeat: 'no-repeat',
                   backgroundPosition: 'right 8px center',
                 }}
@@ -253,7 +258,7 @@ export default function Dashboard({ projects = [], onOpenProject, onNewProject, 
                 onClick={handleToggleCompare}
                 title="Compare two projects"
               >
-                <GitCompare size={16} />
+                <GitDiff size={16} />
                 {compareMode ? 'Cancel' : 'Compare'}
               </Button>
             )}

@@ -1,21 +1,21 @@
-import { AlertTriangle, XCircle, CheckCircle } from 'lucide-react';
+import { Warning, XCircle, CheckCircle } from '@phosphor-icons/react';
 
 const config = {
   warning: {
-    bg: 'var(--color-warning-bg)',
-    border: 'rgba(245, 158, 11, 0.3)',
+    bg: 'var(--color-warning-surface)',
+    border: 'color-mix(in srgb, var(--color-warning) 30%, transparent)',
     color: 'var(--color-warning)',
-    Icon: AlertTriangle,
+    Icon: Warning,
   },
   error: {
-    bg: 'var(--color-error-bg)',
-    border: 'rgba(239, 68, 68, 0.3)',
+    bg: 'var(--color-error-surface)',
+    border: 'color-mix(in srgb, var(--color-error) 30%, transparent)',
     color: 'var(--color-error)',
     Icon: XCircle,
   },
   success: {
-    bg: 'var(--color-success-bg)',
-    border: 'rgba(16, 185, 129, 0.3)',
+    bg: 'var(--color-success-surface)',
+    border: 'color-mix(in srgb, var(--color-success) 30%, transparent)',
     color: 'var(--color-success)',
     Icon: CheckCircle,
   },

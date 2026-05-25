@@ -1,5 +1,5 @@
 import { useState, useId } from 'react';
-import { Info } from 'lucide-react';
+import { Info } from '@phosphor-icons/react';
 import Tooltip from './Tooltip';
 
 export default function InputField({
@@ -31,7 +31,7 @@ export default function InputField({
     ? 'var(--color-error)'
     : focused
     ? 'var(--color-primary-500)'
-    : 'var(--color-border-default)';
+    : 'var(--color-border)';
 
   const boxShadow = error
     ? '0 0 0 3px rgba(239, 68, 68, 0.15)'
@@ -66,7 +66,7 @@ export default function InputField({
           display: 'flex',
           alignItems: 'center',
           height,
-          background: disabled ? 'var(--color-bg-surface)' : 'var(--color-bg-elevated)',
+          background: 'var(--color-bg-deep)',
           border: `1px solid ${borderColor}`,
           borderRadius: 'var(--radius-sm)',
           boxShadow,

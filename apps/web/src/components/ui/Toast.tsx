@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback, createContext, useContext } from 'react';
-import { X, CheckCircle, AlertTriangle, XCircle, Info } from 'lucide-react';
+import { X, CheckCircle, Warning, XCircle, Info } from '@phosphor-icons/react';
 
 const ToastContext = createContext(null);
 
 const icons = {
   success: CheckCircle,
-  warning: AlertTriangle,
+  warning: Warning,
   error: XCircle,
   info: Info,
 };
@@ -40,7 +40,7 @@ function ToastItem({ toast, onDismiss }) {
     <div
       style={{
         width: '320px',
-        background: 'var(--color-bg-overlay)',
+        background: 'var(--color-surface)',
         borderLeft: `3px solid ${borderColors[toast.type] || borderColors.info}`,
         borderRadius: 'var(--radius-sm)',
         padding: 'var(--space-3) var(--space-4)',

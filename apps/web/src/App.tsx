@@ -30,6 +30,21 @@ function AppInner() {
   const [projects, setProjects] = useState(() => loadProjectsFromStorage());
   const { addToast } = useToast();
 
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    const stored = localStorage.getItem('solisys-theme');
+    if (stored === 'light' || stored === 'dark') return stored;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('solisys-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = useCallback(() => {
+    setTheme(t => t === 'dark' ? 'light' : 'dark');
+  }, []);
+
   useEffect(() => {
     const onPop = () => setRoute(parseRoute());
     window.addEventListener('popstate', onPop);
@@ -101,7 +116,7 @@ function AppInner() {
 
   // Marketing page (root)
   if (route.page === 'marketing') {
-    return <Marketing />;
+    return <Marketing theme={theme} onToggleTheme={toggleTheme} />;
   }
 
   if (route.page === 'calculator' && route.projectId) {
@@ -109,12 +124,14 @@ function AppInner() {
       <Calculator
         projectId={route.projectId}
         onBack={handleBackToDashboard}
+        theme={theme}
+        onToggleTheme={toggleTheme}
       />
     );
   }
 
   if (route.page === 'settings') {
-    return <Settings onBack={handleBackToDashboard} />;
+    return <Settings onBack={handleBackToDashboard} theme={theme} onToggleTheme={toggleTheme} />;
   }
 
   return (
@@ -126,6 +143,8 @@ function AppInner() {
       onUpdateProject={handleUpdateProject}
       onDuplicateProject={handleDuplicateProject}
       onOpenSettings={handleOpenSettings}
+      theme={theme}
+      onToggleTheme={toggleTheme}
     />
   );
 }

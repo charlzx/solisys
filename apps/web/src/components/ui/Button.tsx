@@ -12,9 +12,9 @@ const variantStyles = {
     fontWeight: 'var(--weight-medium)',
   },
   secondary: {
-    background: 'rgba(255,255,255,0.05)',
+    background: 'color-mix(in srgb, var(--color-text-primary) 5%, transparent)',
     color: 'var(--color-text-primary)',
-    border: '1px solid rgba(255,255,255,0.10)',
+    border: '1px solid color-mix(in srgb, var(--color-text-primary) 10%, transparent)',
     backdropFilter: 'blur(12px)',
   },
   ghost: {
@@ -45,12 +45,12 @@ const hoverStyles = {
     background: '#f0f0f0',
   },
   secondary: {
-    background: 'rgba(255,255,255,0.15)',
-    border: '1px solid rgba(255,255,255,0.25)',
+    background: 'color-mix(in srgb, var(--color-text-primary) 15%, transparent)',
+    border: '1px solid color-mix(in srgb, var(--color-text-primary) 25%, transparent)',
   },
   ghost: {
     color: 'var(--color-text-primary)',
-    background: 'rgba(255,255,255,0.05)',
+    background: 'color-mix(in srgb, var(--color-text-primary) 5%, transparent)',
   },
   danger: {
     background: 'var(--color-error-bg)',

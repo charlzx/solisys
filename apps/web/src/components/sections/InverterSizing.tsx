@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Check, X } from 'lucide-react';
+import { Check, X } from '@phosphor-icons/react';
 import SectionHeader from '../ui/SectionHeader';
 import Card from '../ui/Card';
 import InputField from '../ui/InputField';
@@ -165,11 +165,11 @@ export default function InverterSizing({
                       ? '2px solid var(--color-primary-500)'
                       : recommended
                       ? '2px solid var(--color-primary-700)'
-                      : '1px solid var(--color-border-default)',
+                      : '1px solid var(--color-border-subtle)',
                     background: selected
-                      ? 'var(--color-primary-glow)'
-                      : 'var(--color-bg-elevated)',
-                    color: selected ? 'var(--color-primary-400)' : 'var(--color-text-primary)',
+                      ? 'color-mix(in srgb, var(--color-primary-500) 10%, transparent)'
+                      : 'var(--color-surface)',
+                    color: selected ? 'var(--color-primary-500)' : 'var(--color-text-primary)',
                     fontFamily: 'var(--font-numeric)',
                     fontSize: 'var(--text-base)',
                     fontWeight: selected ? 'var(--weight-bold)' : 'var(--weight-medium)',
@@ -193,7 +193,7 @@ export default function InverterSizing({
                     textTransform: 'uppercase',
                     letterSpacing: 'var(--tracking-wide)',
                     whiteSpace: 'nowrap',
-                    background: 'var(--color-bg-surface)',
+                    background: 'var(--color-surface)',
                     padding: '0 4px',
                   }}>
                     Recommended
@@ -209,7 +209,7 @@ export default function InverterSizing({
           alignItems: 'flex-end',
           gap: 'var(--space-3)',
           padding: 'var(--space-3)',
-          background: 'var(--color-bg-elevated)',
+          background: 'var(--color-surface-raised)',
           borderRadius: 'var(--radius-sm)',
           marginBottom: 'var(--space-4)',
         }}>
@@ -228,7 +228,7 @@ export default function InverterSizing({
         {effectiveKva > 0 && (
           <div style={{
             padding: 'var(--space-3)',
-            background: isSizeAdequate ? 'var(--color-primary-glow)' : 'rgba(239, 68, 68, 0.1)',
+            background: isSizeAdequate ? 'color-mix(in srgb, var(--color-primary-500) 10%, transparent)' : 'var(--color-error-surface)',
             border: `1px solid ${isSizeAdequate ? 'var(--color-primary-500)' : 'var(--color-error)'}`,
             borderRadius: 'var(--radius-sm)',
             textAlign: 'center',
@@ -238,7 +238,7 @@ export default function InverterSizing({
               fontFamily: 'var(--font-numeric)',
               fontSize: 'var(--text-lg)',
               fontWeight: 'var(--weight-bold)',
-              color: isSizeAdequate ? 'var(--color-primary-400)' : 'var(--color-error)',
+              color: isSizeAdequate ? 'var(--color-primary-500)' : 'var(--color-error)',
             }}>
               Selected: {effectiveKva} kVA
             </span>
@@ -323,7 +323,7 @@ export default function InverterSizing({
           <div style={{
             marginTop: 'var(--space-4)',
             padding: 'var(--space-4)',
-            background: 'var(--color-primary-glow)',
+            background: 'color-mix(in srgb, var(--color-primary-500) 10%, transparent)',
             border: '1px solid var(--color-primary-500)',
             borderRadius: 'var(--radius-sm)',
           }}>
@@ -359,8 +359,8 @@ export default function InverterSizing({
                   key={spec.label}
                   style={{
                     padding: 'var(--space-1) var(--space-2)',
-                    background: 'var(--color-bg-elevated)',
-                    border: '1px solid var(--color-border-default)',
+                    background: 'var(--color-surface)',
+                    border: '1px solid var(--color-border-subtle)',
                     borderRadius: 'var(--radius-sm)',
                     fontSize: 'var(--text-xs)',
                     fontFamily: 'var(--font-numeric)',

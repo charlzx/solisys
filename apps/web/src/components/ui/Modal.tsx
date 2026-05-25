@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { X } from 'lucide-react';
+import { X } from '@phosphor-icons/react';
 import Button from './Button';
 
 export default function Modal({
@@ -40,7 +40,7 @@ export default function Modal({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'rgba(0, 0, 0, 0.7)',
+        background: 'var(--color-overlay)',
         backdropFilter: 'blur(4px)',
         animation: 'modalOverlayIn var(--duration-normal) var(--ease-default)',
       }}
@@ -51,7 +51,7 @@ export default function Modal({
       <div
         ref={panelRef}
         style={{
-          background: 'var(--color-bg-surface)',
+          background: 'var(--color-surface)',
           border: '1px solid var(--color-border-strong)',
           borderRadius: 'var(--radius-lg)',
           width: '90vw',

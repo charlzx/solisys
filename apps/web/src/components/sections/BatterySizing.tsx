@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Check, X } from 'lucide-react';
+import { Check, X } from '@phosphor-icons/react';
 import SectionHeader from '../ui/SectionHeader';
 import Card from '../ui/Card';
 import InputField from '../ui/InputField';
@@ -63,13 +63,13 @@ export default function BatterySizing({
 
       {systemType === 'grid-tied' && (
         <div style={{
-          background: 'rgba(0, 195, 201, 0.06)',
-          border: '1px solid rgba(0, 195, 201, 0.15)',
+          background: 'var(--color-info-surface)',
+          border: '1px solid var(--color-info)',
           borderRadius: 'var(--radius-md)',
           padding: 'var(--space-3) var(--space-4)',
           marginBottom: 'var(--space-4)',
           fontSize: 'var(--text-sm)',
-          color: 'var(--color-primary-400)',
+          color: 'var(--color-info)',
           fontFamily: 'var(--font-body)',
           lineHeight: 'var(--leading-relaxed)',
         }}>
@@ -155,7 +155,7 @@ export default function BatterySizing({
             }}>
               System Voltage
             </label>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', borderRadius: 'var(--radius-sm)', overflow: 'hidden', border: '1px solid var(--color-border-default)' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', borderRadius: 'var(--radius-sm)', overflow: 'hidden', border: '1px solid var(--color-border)' }}>
               {SYSTEM_VOLTAGE_OPTIONS.map((opt, idx) => (
                 <button
                   key={opt.value}
@@ -164,15 +164,15 @@ export default function BatterySizing({
                     padding: 'var(--space-2) var(--space-2)',
                     height: '42px',
                     border: 'none',
-                    background: sysV === opt.value ? 'var(--color-primary-500)' : 'var(--color-bg-elevated)',
+                    background: sysV === opt.value ? 'var(--color-primary-500)' : 'var(--color-surface)',
                     color: sysV === opt.value ? 'var(--color-text-inverse)' : 'var(--color-text-primary)',
                     fontFamily: 'var(--font-numeric)',
                     fontSize: 'var(--text-sm)',
                     fontWeight: sysV === opt.value ? 'var(--weight-bold)' : 'var(--weight-medium)',
                     cursor: 'pointer',
                     transition: 'all var(--duration-normal) var(--ease-default)',
-                    borderRight: (idx % 3 !== 2) ? '1px solid var(--color-border-default)' : 'none',
-                    borderBottom: idx < 3 ? '1px solid var(--color-border-default)' : 'none',
+                    borderRight: (idx % 3 !== 2) ? '1px solid var(--color-border-subtle)' : 'none',
+                    borderBottom: idx < 3 ? '1px solid var(--color-border-subtle)' : 'none',
                     whiteSpace: 'nowrap',
                   }}
                 >
@@ -253,11 +253,11 @@ export default function BatterySizing({
           <div style={{
             marginBottom: 'var(--space-4)',
             padding: 'var(--space-4)',
-            background: 'var(--color-primary-glow)',
+            background: 'color-mix(in srgb, var(--color-primary-500) 10%, transparent)',
             border: '1px solid var(--color-primary-500)',
             borderRadius: 'var(--radius-sm)',
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--space-3)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifycontent: 'space-between', marginBottom: 'var(--space-3)' }}>
               <div style={{ minWidth: 0 }}>
                 <div style={{
                   fontFamily: 'var(--font-body)',
@@ -292,8 +292,8 @@ export default function BatterySizing({
                   key={spec.label}
                   style={{
                     padding: 'var(--space-1) var(--space-2)',
-                    background: 'var(--color-bg-elevated)',
-                    border: '1px solid var(--color-border-default)',
+                    background: 'var(--color-surface)',
+                    border: '1px solid var(--color-border-subtle)',
                     borderRadius: 'var(--radius-sm)',
                     fontSize: 'var(--text-xs)',
                     fontFamily: 'var(--font-numeric)',

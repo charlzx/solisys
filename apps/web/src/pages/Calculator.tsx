@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { StickyNote, ChevronDown, ChevronUp, Sun, Zap, UtilityPole } from 'lucide-react';
+import { Note as StickyNote, CaretDown, CaretUp, Sun, Lightning as Zap, Lightning as UtilityPole } from '@phosphor-icons/react';
 import TopBar from '../components/layout/TopBar';
 import Sidebar from '../components/layout/Sidebar';
 import OutputPanel from '../components/layout/OutputPanel';
@@ -25,7 +25,7 @@ import InterpretModal from '../components/InterpretModal';
 
 const SECTION_IDS = ['load', 'inverter', 'battery', 'solar', 'wire', 'diagram', 'cost', 'export'];
 
-export default function Calculator({ projectId, onBack }) {
+export default function Calculator({ projectId, onBack, theme = 'dark', onToggleTheme }) {
   const { project, setProject, updateField, updateAppliance, addAppliance, removeAppliance } = useProject(projectId);
   const { panels, batteries, inverters } = useComponentDatabase();
   const { saveStatus, saveNow: forceSave } = useAutoSave(project);
@@ -319,6 +319,8 @@ export default function Calculator({ projectId, onBack }) {
         onToggleOutput={() => setOutputOpen((o) => !o)}
         isMobile={isMobile}
         isDesktop={isDesktop}
+        theme={theme}
+        onToggleTheme={onToggleTheme}
       />
 
       {(isMobile || isTablet) && sidebarOpen && (
@@ -417,8 +419,8 @@ export default function Calculator({ projectId, onBack }) {
                     alignItems: 'center',
                     gap: isMobile ? 'var(--space-3)' : 'var(--space-2)',
                     padding: isMobile ? 'var(--space-3) var(--space-4)' : 'var(--space-4) var(--space-3)',
-                    background: isActive ? 'rgba(0, 195, 201, 0.08)' : 'rgba(255,255,255,0.03)',
-                    border: isActive ? '2px solid rgba(0, 195, 201, 0.5)' : '1px solid rgba(255,255,255,0.08)',
+                    background: isActive ? 'color-mix(in srgb, var(--color-primary-500) 10%, transparent)' : 'var(--color-surface)',
+                    border: isActive ? '2px solid var(--color-primary-500)' : '1px solid var(--color-border)',
                     borderRadius: 'var(--radius-md)',
                     cursor: 'pointer',
                     transition: 'all var(--duration-normal) var(--ease-default)',
@@ -451,8 +453,8 @@ export default function Calculator({ projectId, onBack }) {
           </div>
 
           <div style={{
-            background: 'rgba(255,255,255,0.03)',
-            border: '1px solid rgba(255,255,255,0.06)',
+            background: 'var(--color-surface)',
+            border: '1px solid var(--color-border-subtle)',
             borderRadius: 'var(--radius-md)',
             overflow: 'hidden',
           }}>
@@ -485,7 +487,7 @@ export default function Calculator({ projectId, onBack }) {
                 }} />
               )}
               <span style={{ marginLeft: 'auto' }}>
-                {notesOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                {notesOpen ? <CaretUp size={14} /> : <CaretDown size={14} />}
               </span>
             </button>
             {notesOpen && (
@@ -497,8 +499,8 @@ export default function Calculator({ projectId, onBack }) {
                   rows={4}
                   style={{
                     width: '100%',
-                    background: 'rgba(255,255,255,0.03)',
-                    border: '1px solid rgba(255,255,255,0.08)',
+                    background: 'color-mix(in srgb, var(--color-text-primary) 3%, transparent)',
+                    border: '1px solid var(--color-border)',
                     borderRadius: 'var(--radius-sm)',
                     color: 'var(--color-text-primary)',
                     fontFamily: 'var(--font-body)',

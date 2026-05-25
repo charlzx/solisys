@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  Sun, Zap, BarChart3, Globe2, ArrowRight, ChevronRight, Menu, X,
-  Laptop, Smartphone, Code, CheckCircle, CreditCard, ChevronDown, Check,
-  Copy, CheckCircle2, DollarSign, Download, Play, Info, AlertTriangle, ShieldCheck
-} from 'lucide-react';
+  Sun, Moon, Lightning as Zap, ChartBar as BarChart3, Globe as Globe2, ArrowRight, CaretRight, List as Menu, X,
+  Laptop, DeviceMobile as Smartphone, Code, CheckCircle, CreditCard, CaretDown, Check,
+  Copy, CheckCircle as CheckCircle2, DollarSign, Download, Play, Info, Warning as AlertTriangle, ShieldCheck
+} from '@phosphor-icons/react';
 import './marketing.css';
 
 // ─── Stat counter hook ──────────────────────────────────────────────────────
@@ -176,7 +176,7 @@ function Hero() {
           </a>
           <a href="#features" className="btn btn--ghost btn--lg">
             See how it works
-            <ChevronRight size={16} />
+            <CaretRight size={16} />
           </a>
         </div>
       </div>
@@ -1360,7 +1360,7 @@ function PricingPage() {
                   style={{ display: 'flex', justifyContent: 'space-between', width: '100%', background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer', padding: 0, alignItems: 'center' }}
                 >
                   <span style={{ fontSize: '16px', fontWeight: 600, color: 'var(--color-text-primary)' }}>{faq.q}</span>
-                  <ChevronDown size={18} style={{ transform: faqOpen === idx ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform var(--duration-fast)' }} />
+                  <CaretDown size={18} style={{ transform: faqOpen === idx ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform var(--duration-fast)' }} />
                 </button>
                 {faqOpen === idx && (
                   <div className="faq-answer" style={{ marginTop: '12px', fontSize: '14px', color: 'var(--color-text-secondary)', lineHeight: 1.5 }}>

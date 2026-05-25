@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import {
-  Zap, Power, BatteryCharging, Sun, Cable, GitBranch, DollarSign, FileDown,
-  ChevronLeft, ChevronRight, BookOpen, Home,
-} from 'lucide-react';
+  Lightning as Zap, Plug as Power, BatteryCharging, Sun, Lightning as Cable, GitBranch, CurrencyDollar as DollarSign, FileArrowDown as FileDown,
+  CaretLeft, CaretRight, BookOpen, House as Home,
+} from '@phosphor-icons/react';
 import { NAV_SECTIONS } from '../../data/constants';
 
 const PROGRESS_SECTION_IDS_DEFAULT = ['load', 'inverter', 'battery', 'solar'];
@@ -22,7 +22,7 @@ const iconMap = {
 const statusColors = {
   complete: 'var(--color-success)',
   'in-progress': 'var(--color-primary-500)',
-  empty: 'rgba(255,255,255,0.2)',
+  empty: 'color-mix(in srgb, var(--color-text-primary) 20%, transparent)',
 };
 
 export default function Sidebar({
@@ -50,10 +50,10 @@ export default function Sidebar({
         left: 0,
         width: isMobile ? '260px' : width,
         height: 'calc(100vh - 56px)',
-        background: 'rgba(15, 15, 17, 0.98)',
+        background: 'color-mix(in srgb, var(--color-bg-deep) 98%, transparent)',
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
-        borderRight: '1px solid rgba(255,255,255,0.10)',
+        borderRight: '1px solid var(--color-border-subtle)',
         display: 'flex',
         flexDirection: 'column',
         zIndex: 50,
@@ -75,12 +75,12 @@ export default function Sidebar({
               width: '100%',
               padding: 'var(--space-2) var(--space-3)',
               marginBottom: 'var(--space-1)',
-              background: hoveredId === 'dashboard' ? 'rgba(255,255,255,0.05)' : 'transparent',
+              background: hoveredId === 'dashboard' ? 'color-mix(in srgb, var(--color-text-primary) 5%, transparent)' : 'transparent',
               border: 'none',
               borderRadius: 'var(--radius-md)',
               cursor: 'pointer',
               transition: `all var(--duration-normal) var(--ease-default)`,
-              borderBottom: '1px solid rgba(255,255,255,0.05)',
+              borderBottom: '1px solid var(--color-border-subtle)',
               paddingBottom: 'var(--space-3)',
             }}
           >
@@ -115,9 +115,9 @@ export default function Sidebar({
                 padding: collapsed && !isMobile ? 'var(--space-3)' : 'var(--space-2) var(--space-3)',
                 marginBottom: 'var(--space-1)',
                 background: isActive
-                  ? 'rgba(0, 195, 201, 0.08)'
+                  ? 'color-mix(in srgb, var(--color-accent) 8%, transparent)'
                   : isHovered
-                  ? 'rgba(255,255,255,0.05)'
+                  ? 'color-mix(in srgb, var(--color-text-primary) 5%, transparent)'
                   : 'transparent',
                 border: 'none',
                 borderRadius: 'var(--radius-md)',
@@ -193,7 +193,7 @@ export default function Sidebar({
         return (
           <div
             style={{
-              borderTop: '1px solid rgba(255,255,255,0.05)',
+              borderTop: '1px solid var(--color-border-subtle)',
             }}
           >
             <div
@@ -235,7 +235,7 @@ export default function Sidebar({
                   width: '100%',
                   height: '4px',
                   borderRadius: 'var(--radius-full)',
-                  background: 'rgba(255,255,255,0.08)',
+                  background: 'color-mix(in srgb, var(--color-text-primary) 8%, transparent)',
                   overflow: 'hidden',
                 }}
                 title={`${completedSections}/${totalSections} sections complete`}
@@ -267,12 +267,12 @@ export default function Sidebar({
                     padding: 'var(--space-2) var(--space-3)',
                     background: allCoreComplete
                       ? hoveredId === 'interpret'
-                        ? 'rgba(0, 195, 201, 0.15)'
-                        : 'rgba(0, 195, 201, 0.08)'
+                        ? 'color-mix(in srgb, var(--color-accent) 15%, transparent)'
+                        : 'color-mix(in srgb, var(--color-accent) 8%, transparent)'
                       : hoveredId === 'interpret'
-                        ? 'rgba(255,255,255,0.05)'
+                        ? 'color-mix(in srgb, var(--color-text-primary) 5%, transparent)'
                         : 'transparent',
-                    border: allCoreComplete ? '1px solid rgba(0, 195, 201, 0.2)' : '1px solid transparent',
+                    border: allCoreComplete ? '1px solid color-mix(in srgb, var(--color-accent) 20%, transparent)' : '1px solid transparent',
                     borderRadius: 'var(--radius-md)',
                     color: allCoreComplete ? 'var(--color-primary-500)' : 'var(--color-text-muted)',
                     cursor: 'pointer',
@@ -302,7 +302,7 @@ export default function Sidebar({
                     gap: 'var(--space-2)',
                     width: '100%',
                     padding: 'var(--space-2) var(--space-3)',
-                    background: hoveredId === 'collapse' ? 'rgba(255,255,255,0.05)' : 'transparent',
+                    background: hoveredId === 'collapse' ? 'color-mix(in srgb, var(--color-text-primary) 5%, transparent)' : 'transparent',
                     border: 'none',
                     borderRadius: 'var(--radius-md)',
                     color: 'var(--color-text-muted)',
@@ -313,7 +313,7 @@ export default function Sidebar({
                   }}
                   title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
                 >
-                  {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+                  {collapsed ? <CaretRight size={14} /> : <CaretLeft size={14} />}
                   {!collapsed && <span>Collapse</span>}
                 </button>
               </div>

@@ -26,7 +26,7 @@ export default function SectionHeader({
               width: '26px',
               height: '26px',
               borderRadius: 'var(--radius-md)',
-              background: 'rgba(0, 195, 201, 0.1)',
+              background: 'color-mix(in srgb, var(--color-primary-500) 10%, transparent)',
               color: 'var(--color-primary-500)',
               fontFamily: 'var(--font-numeric)',
               fontSize: 'var(--text-xs)',
@@ -68,7 +68,7 @@ export default function SectionHeader({
         style={{
           marginTop: 'var(--space-4)',
           height: '1px',
-          background: 'rgba(255,255,255,0.05)',
+          background: 'var(--color-border-subtle)',
           width: '100%',
         }}
       />

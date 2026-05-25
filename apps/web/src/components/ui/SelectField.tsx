@@ -1,5 +1,5 @@
 import { useState, useId } from 'react';
-import { Info, ChevronDown } from 'lucide-react';
+import { Info, CaretDown } from '@phosphor-icons/react';
 import Tooltip from './Tooltip';
 
 export default function SelectField({
@@ -25,7 +25,7 @@ export default function SelectField({
     ? 'var(--color-error)'
     : focused
     ? 'var(--color-primary-500)'
-    : 'var(--color-border-default)';
+    : 'var(--color-border)';
 
   const boxShadow = error
     ? '0 0 0 3px rgba(239, 68, 68, 0.15)'
@@ -61,7 +61,7 @@ export default function SelectField({
           display: 'flex',
           alignItems: 'center',
           height,
-          background: disabled ? 'var(--color-bg-surface)' : 'var(--color-bg-elevated)',
+          background: 'var(--color-bg-deep)',
           border: `1px solid ${borderColor}`,
           borderRadius: 'var(--radius-sm)',
           boxShadow,
@@ -108,7 +108,7 @@ export default function SelectField({
             );
           })}
         </select>
-        <ChevronDown
+        <CaretDown
           size={16}
           style={{
             position: 'absolute',

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Zap, Plus, Trash2, Download } from 'lucide-react';
+import { Lightning as Zap, Plus, Trash as Trash2, FolderOpen as Download } from '@phosphor-icons/react';
 import SectionHeader from '../ui/SectionHeader';
 import Card from '../ui/Card';
 import InputField from '../ui/InputField';
@@ -70,7 +70,7 @@ export default function LoadAnalysis({
           style={{
             flex: 1,
             cursor: 'pointer',
-            background: isAudit ? 'var(--color-primary-glow)' : undefined,
+            background: isAudit ? 'color-mix(in srgb, var(--color-primary-500) 10%, transparent)' : undefined,
             border: isAudit ? '1px solid var(--color-primary-500)' : undefined,
             padding: 'var(--space-4)',
             textAlign: 'center',
@@ -96,7 +96,7 @@ export default function LoadAnalysis({
           style={{
             flex: 1,
             cursor: 'pointer',
-            background: !isAudit ? 'var(--color-primary-glow)' : undefined,
+            background: !isAudit ? 'color-mix(in srgb, var(--color-primary-500) 10%, transparent)' : undefined,
             border: !isAudit ? '1px solid var(--color-primary-500)' : undefined,
             padding: 'var(--space-4)',
             textAlign: 'center',
@@ -122,7 +122,7 @@ export default function LoadAnalysis({
             <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: 'var(--font-body)' }}>
               <thead>
                 <tr style={{
-                  background: 'var(--color-bg-elevated)',
+                  background: 'var(--color-surface-raised)',
                   borderBottom: '1px solid var(--color-border-strong)',
                 }}>
                   {['Appliance Name', 'Qty', 'Power', 'Unit', 'Hours/Day', 'Daily Wh', ''].map((h, i) => (

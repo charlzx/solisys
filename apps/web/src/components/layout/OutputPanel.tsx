@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronRight, X } from 'lucide-react';
+import { CaretDown, CaretRight, X } from '@phosphor-icons/react';
 import KpiBlock from '../ui/KpiBlock';
 import ValidationChip from '../ui/ValidationChip';
 import Button from '../ui/Button';
@@ -9,7 +9,7 @@ function KpiGroup({ title, defaultOpen = true, children }) {
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <div style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+    <div style={{ borderBottom: '1px solid var(--color-border-subtle)' }}>
       <button
         onClick={() => setOpen(!open)}
         style={{
@@ -35,7 +35,7 @@ function KpiGroup({ title, defaultOpen = true, children }) {
         >
           {title}
         </span>
-        {open ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+        {open ? <CaretDown size={14} /> : <CaretRight size={14} />}
       </button>
       {open && (
         <div
@@ -83,10 +83,10 @@ export default function OutputPanel({
         width: '100%',
         maxWidth: '360px',
         height: 'calc(100vh - 56px)',
-        background: 'rgba(15, 15, 17, 0.98)',
+        background: 'color-mix(in srgb, var(--color-surface) 98%, transparent)',
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
-        borderLeft: '1px solid rgba(255,255,255,0.10)',
+        borderLeft: '1px solid var(--color-border)',
         display: 'flex',
         flexDirection: 'column',
         zIndex: 50,
@@ -100,10 +100,10 @@ export default function OutputPanel({
         right: 0,
         width: '320px',
         height: 'calc(100vh - 56px)',
-        background: 'rgba(15, 15, 17, 0.98)',
+        background: 'color-mix(in srgb, var(--color-surface) 98%, transparent)',
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
-        borderLeft: '1px solid rgba(255,255,255,0.10)',
+        borderLeft: '1px solid var(--color-border)',
         display: 'flex',
         flexDirection: 'column',
         zIndex: 50,
@@ -111,11 +111,11 @@ export default function OutputPanel({
       };
 
   return (
-    <aside style={panelStyle}>
+    <aside style={panelStyle as React.CSSProperties}>
       <div
         style={{
           padding: 'var(--space-4)',
-          borderBottom: '1px solid rgba(255,255,255,0.05)',
+          borderBottom: '1px solid var(--color-border-subtle)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -261,7 +261,7 @@ export default function OutputPanel({
           />
         </KpiGroup>
 
-        <div style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+        <div style={{ borderBottom: '1px solid var(--color-border-subtle)' }}>
           <button
             onClick={() => setValidationOpen(!validationOpen)}
             style={{
@@ -317,7 +317,7 @@ export default function OutputPanel({
                 </span>
               )}
             </div>
-            {validationOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+            {validationOpen ? <CaretDown size={14} /> : <CaretRight size={14} />}
           </button>
           {validationOpen && (
             <div
@@ -356,7 +356,7 @@ export default function OutputPanel({
       <div
         style={{
           padding: 'var(--space-4)',
-          borderTop: '1px solid rgba(255,255,255,0.05)',
+          borderTop: '1px solid var(--color-border-subtle)',
         }}
       >
         <Button

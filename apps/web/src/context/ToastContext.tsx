@@ -35,19 +35,19 @@ export function useToast() {
 
 const typeStyles = {
   success: {
-    background: 'rgba(0, 195, 201, 0.15)',
-    border: '1px solid rgba(0, 195, 201, 0.3)',
-    color: 'rgb(0, 195, 201)',
+    background: 'var(--color-success-surface)',
+    border: '1px solid var(--color-success)',
+    color: 'var(--color-success)',
   },
   error: {
-    background: 'rgba(239, 68, 68, 0.15)',
-    border: '1px solid rgba(239, 68, 68, 0.3)',
-    color: 'rgb(239, 68, 68)',
+    background: 'var(--color-error-surface)',
+    border: '1px solid var(--color-error)',
+    color: 'var(--color-error)',
   },
   info: {
-    background: 'rgba(255, 255, 255, 0.08)',
-    border: '1px solid rgba(255, 255, 255, 0.15)',
-    color: 'var(--color-text-primary)',
+    background: 'var(--color-info-surface)',
+    border: '1px solid var(--color-info)',
+    color: 'var(--color-info)',
   },
 };
 
@@ -83,7 +83,7 @@ function ToastContainer({ toasts, onRemove }) {
               pointerEvents: 'auto',
               animation: 'toastSlideIn 0.25s ease-out',
               maxWidth: '360px',
-              boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
+              boxShadow: 'var(--shadow-md)',
             }}
           >
             {toast.message}

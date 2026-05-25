@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { ArrowLeft, Download, Check, Menu, BarChart3, Undo2, Redo2 } from 'lucide-react';
+import { ArrowLeft, Download, Check, List as Menu, ChartBar as BarChart3, ArrowCounterClockwise as Undo2, ArrowClockwise as Redo2, Sun, Moon } from '@phosphor-icons/react';
 import Button from '../ui/Button';
 
 export default function TopBar({
@@ -16,6 +16,8 @@ export default function TopBar({
   onToggleOutput,
   isMobile = false,
   isDesktop = true,
+  theme = 'dark',
+  onToggleTheme,
 }) {
   const [editing, setEditing] = useState(false);
   const [editValue, setEditValue] = useState(projectName);
@@ -67,10 +69,10 @@ export default function TopBar({
         left: 0,
         right: 0,
         height: '56px',
-        background: 'rgba(9, 9, 11, 0.95)',
+        background: 'color-mix(in srgb, var(--color-bg-deep) 95%, transparent)',
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
-        borderBottom: '1px solid rgba(255,255,255,0.10)',
+        borderBottom: '1px solid var(--color-border-subtle)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -107,7 +109,7 @@ export default function TopBar({
               SOLISYS
             </span>
 
-            <span style={{ color: 'rgba(255,255,255,0.10)', flexShrink: 0 }}>|</span>
+            <span style={{ color: 'var(--color-border-subtle)', flexShrink: 0 }}>|</span>
           </>
         )}
 
@@ -119,7 +121,7 @@ export default function TopBar({
             onBlur={handleBlur}
             onKeyDown={handleKeyDown}
             style={{
-              background: 'rgba(255,255,255,0.05)',
+              background: 'color-mix(in srgb, var(--color-text-primary) 5%, transparent)',
               border: '1px solid var(--color-primary-500)',
               borderRadius: 'var(--radius-sm)',
               color: 'var(--color-text-primary)',
@@ -234,6 +236,15 @@ export default function TopBar({
             }}
           />
         ) : null}
+
+        <Button
+          variant="icon-only"
+          onClick={onToggleTheme}
+          title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+          style={{ marginRight: '4px' }}
+        >
+          {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+        </Button>
 
         {isMobile ? (
           <Button variant="icon-only" onClick={onExport} title="Export">

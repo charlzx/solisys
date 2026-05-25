@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ArrowLeft, User, Sliders, Database, Download, Upload, Trash2, Save, Plus, X, Sun, BatteryCharging, Power } from 'lucide-react';
+import { ArrowLeft, User, Sliders, Database, Download, Upload, Trash as Trash2, FloppyDisk as Save, Plus, X, Sun, BatteryCharging, Power } from '@phosphor-icons/react';
 import Button from '../components/ui/Button';
 import InputField from '../components/ui/InputField';
 import SelectField from '../components/ui/SelectField';
@@ -372,9 +372,9 @@ export default function Settings({ onBack }) {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 padding: 'var(--space-4)',
-                background: 'rgba(255,255,255,0.03)',
+                background: 'var(--color-surface)',
                 borderRadius: 'var(--radius-md)',
-                border: '1px solid rgba(255,255,255,0.05)',
+                border: '1px solid var(--color-border-subtle)',
               }}>
                 <div>
                   <div style={{
@@ -405,9 +405,9 @@ export default function Settings({ onBack }) {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 padding: 'var(--space-4)',
-                background: 'rgba(255,255,255,0.03)',
+                background: 'var(--color-surface)',
                 borderRadius: 'var(--radius-md)',
-                border: '1px solid rgba(255,255,255,0.05)',
+                border: '1px solid var(--color-border-subtle)',
               }}>
                 <div>
                   <div style={{
@@ -447,9 +447,9 @@ export default function Settings({ onBack }) {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 padding: 'var(--space-4)',
-                background: 'rgba(239, 68, 68, 0.03)',
+                background: 'var(--color-error-surface)',
                 borderRadius: 'var(--radius-md)',
-                border: '1px solid rgba(239, 68, 68, 0.1)',
+                border: '1px solid color-mix(in srgb, var(--color-error) 20%, transparent)',
               }}>
                 <div>
                   <div style={{
@@ -537,7 +537,7 @@ function SettingsSection({ icon, title, children }) {
           width: '28px',
           height: '28px',
           borderRadius: 'var(--radius-sm)',
-          background: 'rgba(0, 195, 201, 0.1)',
+          background: 'color-mix(in srgb, var(--color-primary-500) 10%, transparent)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -557,8 +557,8 @@ function SettingsSection({ icon, title, children }) {
         </h2>
       </div>
       <div style={{
-        background: 'rgba(255,255,255,0.03)',
-        border: '1px solid rgba(255,255,255,0.05)',
+        background: 'var(--color-surface)',
+        border: '1px solid var(--color-border-subtle)',
         borderRadius: 'var(--radius-lg)',
         padding: 'var(--space-6)',
       }}>
@@ -746,9 +746,9 @@ function MyComponentsSection() {
               gap: 'var(--space-2)',
               padding: 'var(--space-2) var(--space-4)',
               borderRadius: 'var(--radius-md)',
-              border: activeTab === tab.key ? '1px solid var(--color-primary-500)' : '1px solid rgba(255,255,255,0.1)',
-              background: activeTab === tab.key ? 'rgba(0, 195, 201, 0.1)' : 'rgba(255,255,255,0.03)',
-              color: activeTab === tab.key ? 'var(--color-primary-400)' : 'var(--color-text-secondary)',
+              border: activeTab === tab.key ? '1px solid var(--color-primary-500)' : '1px solid var(--color-border-subtle)',
+              background: activeTab === tab.key ? 'color-mix(in srgb, var(--color-primary-500) 10%, transparent)' : 'var(--color-surface-raised)',
+              color: activeTab === tab.key ? 'var(--color-primary-500)' : 'var(--color-text-secondary)',
               fontFamily: 'var(--font-body)',
               fontSize: 'var(--text-sm)',
               fontWeight: 'var(--weight-medium)',
@@ -785,9 +785,9 @@ function MyComponentsSection() {
                 justifyContent: 'space-between',
                 gap: 'var(--space-3)',
                 padding: 'var(--space-3) var(--space-4)',
-                background: 'rgba(255,255,255,0.03)',
+                background: 'var(--color-surface-raised)',
                 borderRadius: 'var(--radius-md)',
-                border: '1px solid rgba(255,255,255,0.05)',
+                border: '1px solid var(--color-border-subtle)',
               }}
             >
               <div style={{
@@ -813,9 +813,9 @@ function MyComponentsSection() {
       {showForm && (
         <div style={{
           padding: 'var(--space-5)',
-          background: 'rgba(255,255,255,0.02)',
+          background: 'var(--color-surface)',
           borderRadius: 'var(--radius-md)',
-          border: '1px solid rgba(255,255,255,0.08)',
+          border: '1px solid var(--color-border)',
           marginTop: items.length > 0 ? 0 : undefined,
         }}>
           <div style={{

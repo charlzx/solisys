@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Sun, ChevronDown, ChevronUp, Minus, Plus, X, MapPin } from 'lucide-react';
+import { Sun, CaretDown, CaretUp, Minus, Plus, X, MapPin } from '@phosphor-icons/react';
 import SectionHeader from '../ui/SectionHeader';
 import Card from '../ui/Card';
 import InputField from '../ui/InputField';
@@ -75,7 +75,7 @@ export default function SolarArray({
             gap: 'var(--space-3)',
             marginBottom: 'var(--space-4)',
             padding: 'var(--space-3)',
-            background: 'var(--color-bg-elevated)',
+            background: 'var(--color-bg-deep)',
             borderRadius: 'var(--radius-sm)',
           }}>
             <MapPin size={18} style={{ color: 'var(--color-primary-500)', flexShrink: 0 }} />
@@ -253,7 +253,7 @@ export default function SolarArray({
             gap: 'var(--space-4)',
             marginTop: 'var(--space-6)',
             padding: 'var(--space-4)',
-            background: 'var(--color-bg-elevated)',
+            background: 'var(--color-bg-deep)',
             borderRadius: 'var(--radius-sm)',
           }}>
             <KpiBlock label="Required Array" value={formatNumber(calculations.requiredPanelWattageTotal / 1000, 2)} unit="kW" />
@@ -304,7 +304,7 @@ export default function SolarArray({
               }}>
                 String Configuration
               </h3>
-              {showStringConfig ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+              {showStringConfig ? <CaretUp size={18} /> : <CaretDown size={18} />}
             </div>
 
             {showStringConfig && (
@@ -314,7 +314,7 @@ export default function SolarArray({
                   gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
                   gap: 'var(--space-4)',
                   padding: 'var(--space-3)',
-                  background: 'var(--color-bg-elevated)',
+                  background: 'var(--color-bg-deep)',
                   borderRadius: 'var(--radius-sm)',
                 }}>
                   <div>
@@ -399,7 +399,7 @@ export default function SolarArray({
                   gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
                   gap: 'var(--space-4)',
                   padding: 'var(--space-3)',
-                  background: 'var(--color-bg-elevated)',
+                  background: 'var(--color-bg-deep)',
                   borderRadius: 'var(--radius-sm)',
                 }}>
                   <div>
@@ -446,7 +446,7 @@ export default function SolarArray({
                   gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
                   gap: 'var(--space-3)',
                   padding: 'var(--space-3)',
-                  background: 'var(--color-bg-base)',
+                  background: 'var(--color-bg-deep)',
                   borderRadius: 'var(--radius-sm)',
                   border: '1px solid var(--color-border-subtle)',
                 }}>
@@ -491,7 +491,7 @@ export default function SolarArray({
             }}>
               Charge Controller
             </h3>
-            {showChargeController ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+            {showChargeController ? <CaretUp size={18} /> : <CaretDown size={18} />}
           </div>
 
           {showChargeController && (
@@ -508,7 +508,7 @@ export default function SolarArray({
                   gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
                   gap: 'var(--space-4)',
                   padding: 'var(--space-4)',
-                  background: 'var(--color-bg-elevated)',
+                  background: 'var(--color-bg-deep)',
                   borderRadius: 'var(--radius-sm)',
                 }}>
                   <KpiBlock label="Required Size" value={calculations.chargeControllerAmps} unit="A" />
@@ -523,9 +523,9 @@ export default function SolarArray({
                           borderRadius: 'var(--radius-sm)',
                           fontSize: 'var(--text-xs)',
                           fontFamily: 'var(--font-numeric)',
-                          background: size === calculations.chargeControllerAmps ? 'var(--color-primary-500)' : 'var(--color-bg-overlay)',
+                          background: size === calculations.chargeControllerAmps ? 'var(--color-primary-500)' : 'var(--color-bg-deep)',
                           color: size === calculations.chargeControllerAmps ? 'var(--color-text-inverse)' : 'var(--color-text-secondary)',
-                          border: `1px solid ${size === calculations.chargeControllerAmps ? 'var(--color-primary-500)' : 'var(--color-border-default)'}`,
+                          border: `1px solid ${size === calculations.chargeControllerAmps ? 'var(--color-primary-500)' : 'var(--color-border)'}`,
                         }}>
                           {size}A
                         </span>
@@ -538,7 +538,7 @@ export default function SolarArray({
               {project.hasBuiltInController && (
                 <div style={{
                   padding: 'var(--space-3)',
-                  background: 'var(--color-bg-elevated)',
+                  background: 'var(--color-bg-deep)',
                   borderRadius: 'var(--radius-sm)',
                   fontSize: 'var(--text-sm)',
                   color: 'var(--color-text-secondary)',

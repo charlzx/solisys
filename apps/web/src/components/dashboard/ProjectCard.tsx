@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Edit2, Trash2, ArrowRight, Copy } from 'lucide-react';
+import { PencilSimple as Edit2, Trash as Trash2, ArrowRight, Copy } from '@phosphor-icons/react';
 import Button from '../ui/Button';
 import { formatNumber, timeAgo } from '../../lib/utils';
 
@@ -24,8 +24,8 @@ export default function ProjectCard({ project, onOpen, onEdit, onDelete, onDupli
       onMouseLeave={() => setHovered(false)}
       onClick={() => onOpen?.(project.id)}
       style={{
-        background: hovered ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.05)',
-        border: `1px solid ${hovered ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.05)'}`,
+        background: hovered ? 'var(--color-surface-raised)' : 'var(--color-surface)',
+        border: `1px solid ${hovered ? 'var(--color-border)' : 'var(--color-border-subtle)'}`,
         borderRadius: 'var(--radius-lg)',
         padding: 'var(--space-4) var(--space-5)',
         cursor: 'pointer',
@@ -36,6 +36,7 @@ export default function ProjectCard({ project, onOpen, onEdit, onDelete, onDupli
         alignItems: 'center',
         gap: 'var(--space-3)',
         minHeight: '80px',
+        boxShadow: hovered ? 'var(--shadow-md)' : 'var(--shadow-sm)',
       }}
     >
       <div style={{ flex: '1 1 200px', minWidth: 0 }}>
@@ -48,7 +49,7 @@ export default function ProjectCard({ project, onOpen, onEdit, onDelete, onDupli
             width: '8px',
             height: '8px',
             borderRadius: 'var(--radius-full)',
-            background: dailyKwh > 0 ? 'var(--color-primary-500)' : 'rgba(255,255,255,0.2)',
+            background: dailyKwh > 0 ? 'var(--color-primary-500)' : 'color-mix(in srgb, var(--color-text-primary) 20%, transparent)',
             flexShrink: 0,
           }} />
           <span style={{
@@ -98,7 +99,7 @@ export default function ProjectCard({ project, onOpen, onEdit, onDelete, onDupli
               style={{
                 padding: '2px var(--space-2)',
                 borderRadius: 'var(--radius-sm)',
-                background: 'rgba(255,255,255,0.08)',
+                background: 'color-mix(in srgb, var(--color-text-primary) 8%, transparent)',
                 fontSize: '10px',
                 color: 'var(--color-text-secondary)',
                 fontFamily: 'var(--font-numeric)',
