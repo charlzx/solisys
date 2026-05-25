@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { CaretLeft, CaretRight, Sun, Lightning as Zap, House, Check, Download, ArrowRight, ArrowSquareOut as Share, Plus, Minus, Trash, Sliders, Lightbulb, Wind, Snowflake, Television, Laptop, Thermometer, Spinner } from '@phosphor-icons/react';
+import { CaretLeft, CaretRight, Sun, Lightning as Zap, House, Check, Download, ArrowRight, ArrowSquareOut as Share, Plus, Minus, Trash, Sliders, Lightbulb, Wind, Snowflake, Television, Laptop, Thermometer, Spinner, TrendUp } from '@phosphor-icons/react';
 import Card from '../ui/Card';
 import InputField from '../ui/InputField';
 import SelectField from '../ui/SelectField';
@@ -379,8 +379,12 @@ export default function SimpleMode({
                   fontSize: 'var(--text-sm)',
                   fontWeight: 'var(--weight-medium)',
                   fontFamily: 'var(--font-body)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 'var(--space-2)',
                 }}>
-                  📈 Estimated Energy Usage: **{formatNumber(calculations.totalDailyKwh, 2)} kWh / day** (Peak demand: **{formatNumber(calculations.estimatedPeakLoadW || 0, 0)} W**)
+                  <TrendUp size={16} style={{ flexShrink: 0 }} />
+                  <span>Estimated Energy Usage: <strong>{formatNumber(calculations.totalDailyKwh, 2)} kWh / day</strong> (Peak demand: <strong>{formatNumber(calculations.estimatedPeakLoadW || 0, 0)} W</strong>)</span>
                 </div>
               )}
             </div>
@@ -540,8 +544,12 @@ export default function SimpleMode({
                 color: 'var(--color-text-muted)',
                 fontFamily: 'var(--font-body)',
                 marginTop: 'var(--space-2)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
               }}>
-                ⚡️ System Sizing Safety: **{autoVoltageLabel}** auto-selected for optimal currents and breaker protection.
+                <Zap size={13} style={{ color: 'var(--color-primary-500)', flexShrink: 0 }} />
+                <span>System Sizing Safety: <strong>{autoVoltageLabel}</strong> auto-selected for optimal currents and breaker protection.</span>
               </div>
             </div>
           )}
@@ -640,8 +648,9 @@ export default function SimpleMode({
             padding: 'var(--space-6)',
             color: 'var(--color-success)',
           }}>
-            <h3 style={{ margin: '0 0 var(--space-2) 0', fontSize: 'var(--text-lg)', fontWeight: 'var(--weight-bold)', color: 'var(--color-text-primary)' }}>
-              🎉 Your Recommended Solar Setup
+            <h3 style={{ margin: '0 0 var(--space-2) 0', fontSize: 'var(--text-lg)', fontWeight: 'var(--weight-bold)', color: 'var(--color-text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Sun size={20} style={{ color: 'var(--color-primary-500)', flexShrink: 0 }} />
+              Your Recommended Solar Setup
             </h3>
             <p style={{
               margin: 0,
