@@ -151,6 +151,174 @@ function Nav({ onToggleTheme, theme, currentPath }: NavProps) {
 }
 
 // ─── Hero ─────────────────────────────────────────────────────────────────────
+// ─── Sizing Sizing Sizing helper ──────────────────────────────────────────────
+const formatVal = (val: number, decimals = 0): string => {
+  return val.toLocaleString('en-US', {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
+};
+
+// ─── Sizing Sizing Sizing Sizing Sizing Interactive Mockup ─────────────────────
+function InteractiveMockup() {
+  const [preset, setPreset] = useState<'small' | 'medium' | 'large'>('medium');
+  const [load, setLoad] = useState(6.8); // kWh/day
+  const [hours, setHours] = useState(12); // hours backup
+
+  const handlePreset = (type: 'small' | 'medium' | 'large') => {
+    setPreset(type);
+    if (type === 'small') {
+      setLoad(2.4);
+      setHours(8);
+    } else if (type === 'medium') {
+      setLoad(6.8);
+      setHours(12);
+    } else if (type === 'large') {
+      setLoad(14.5);
+      setHours(18);
+    }
+  };
+
+  // Sizing Sizing Sizing Calculations (realtime)
+  const wh = load * 1000;
+  const peakW = wh * 0.25; // 25% peak load factor
+  
+  // Inverter Size Tier Sizing
+  let inverterKva = 1.5;
+  if (peakW > 8500) inverterKva = 15.0;
+  else if (peakW > 4500) inverterKva = 10.0;
+  else if (peakW > 2500) inverterKva = 5.0;
+  else if (peakW > 1000) inverterKva = 3.0;
+
+  // Solar Array Sizing (using 4.5h PSH and 450W panels with 82% efficiency)
+  const panelCount = Math.ceil(wh / (4.5 * 450 * 0.82));
+  const arrayKw = (panelCount * 450) / 1000;
+
+  // Battery Storage Sizing (using 200Ah 12V LiFePO4 batteries, 80% DoD)
+  const storageWh = wh * (hours / 24);
+  const batteryCount = Math.max(1, Math.ceil(storageWh / (200 * 12 * 0.8)));
+  const bankKwh = (batteryCount * 200 * 12 * 0.8) / 1000;
+
+  return (
+    <div className="mkt-mockup" style={{ width: '100%', maxWidth: '860px', margin: '0 auto', background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-xl)', overflow: 'hidden', boxShadow: 'var(--shadow-xl)' }}>
+      {/* Top Window Bar */}
+      <div className="mkt-mockup__bar" style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '10px 16px', background: 'var(--color-bg-deep)', borderBottom: '1px solid var(--color-border-subtle)' }}>
+        <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#EF4444' }} />
+        <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#F59E0B' }} />
+        <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#22C55E' }} />
+        <span style={{ marginLeft: '12px', fontSize: '11px', color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)' }}>solisys-local-calculation-engine.js</span>
+      </div>
+      
+      {/* Interactive Sizing Grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))' }}>
+        
+        {/* Sizing Input Panel */}
+        <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px', borderRight: '1px solid var(--color-border-subtle)' }}>
+          <div style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 'var(--tracking-wider)', color: 'var(--color-text-secondary)' }}>
+            1. Sizing Parameters
+          </div>
+          
+          {/* Preset Buttons */}
+          <div style={{ display: 'flex', gap: '8px' }}>
+            {(['small', 'medium', 'large'] as const).map(type => (
+              <button
+                key={type}
+                type="button"
+                onClick={() => handlePreset(type)}
+                style={{
+                  flex: 1,
+                  padding: '8px 10px',
+                  borderRadius: 'var(--radius-full)',
+                  border: '1px solid ' + (preset === type ? 'var(--color-accent)' : 'var(--color-border)'),
+                  background: preset === type ? 'var(--color-accent-muted)' : 'transparent',
+                  color: preset === type ? 'var(--color-text-primary)' : 'var(--color-text-secondary)',
+                  fontSize: '11px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  textTransform: 'capitalize',
+                  transition: 'all 0.2s'
+                }}
+              >
+                {type === 'small' ? 'Small Home' : type === 'medium' ? 'Medium Villa' : 'Mini Office'}
+              </button>
+            ))}
+          </div>
+
+          {/* Load Slider */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: 'var(--color-text-primary)' }}>
+              <span>Daily Energy Load</span>
+              <strong style={{ fontFamily: 'var(--font-mono)' }}>{load.toFixed(1)} kWh/day</strong>
+            </div>
+            <input
+              type="range"
+              min="1"
+              max="25"
+              step="0.5"
+              value={load}
+              onChange={(e) => {
+                setLoad(parseFloat(e.target.value));
+                setPreset('custom');
+              }}
+              style={{ width: '100%', accentColor: 'var(--color-accent)', cursor: 'pointer' }}
+            />
+          </div>
+
+          {/* Autonomy Hours Slider */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: 'var(--color-text-primary)' }}>
+              <span>Desired Backup Hours</span>
+              <strong style={{ fontFamily: 'var(--font-mono)' }}>{hours} Hours</strong>
+            </div>
+            <input
+              type="range"
+              min="4"
+              max="48"
+              step="2"
+              value={hours}
+              onChange={(e) => {
+                setHours(parseInt(e.target.value));
+                setPreset('custom');
+              }}
+              style={{ width: '100%', accentColor: 'var(--color-accent)', cursor: 'pointer' }}
+            />
+          </div>
+        </div>
+
+        {/* Dynamic Calculations Sizing Results Panel */}
+        <div style={{ padding: '24px', background: 'var(--color-bg-deep)', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <div style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 'var(--tracking-wider)', color: 'var(--color-text-secondary)' }}>
+            2. Engine Calculations
+          </div>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {[
+              { label: 'Recommended Inverter', val: `${inverterKva.toFixed(1)} kVA`, desc: `Handles ${formatVal(peakW)}W Estimated peak load` },
+              { label: 'Solar Array Capacity', val: `${arrayKw.toFixed(2)} kW`, desc: `Calculated from ${panelCount} panels (450W each)` },
+              { label: 'Battery Pack Size', val: `${bankKwh.toFixed(1)} kWh`, desc: `Supports ${hours}h storage load demand` }
+            ].map(row => (
+              <div key={row.label} style={{ display: 'flex', flexDirection: 'column', gap: '2px', borderBottom: '1px solid var(--color-border-subtle)', paddingBottom: '10px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                  <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>{row.label}</span>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '16px', fontWeight: 700, color: 'var(--color-accent)' }}>{row.val}</span>
+                </div>
+                <span style={{ fontSize: '10px', color: 'var(--color-text-muted)' }}>{row.desc}</span>
+              </div>
+            ))}
+          </div>
+          
+          <a href="/app" onClick={(e) => navigateToPath('/app', e)} className="btn btn--primary btn--sm" style={{ width: '100%', justifyContent: 'center', marginTop: 'auto' }}>
+            Open Calculator & Edit Load
+            <ArrowRight size={14} />
+          </a>
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+// ─── Hero ─────────────────────────────────────────────────────────────────────
 function Hero() {
   return (
     <section className="mkt-hero" id="home">
@@ -162,13 +330,13 @@ function Hero() {
         </div>
 
         <h1 className="mkt-hero__headline animate-fade-up-in" style={{ animationDelay: '80ms' }}>
-          Solar sizing that
+          Solar Sizing,
           <br />
-          <span className="mkt-hero__accent">actually makes sense.</span>
+          <span className="mkt-hero__accent">Re-engineered.</span>
         </h1>
 
         <p className="mkt-hero__sub animate-fade-up-in" style={{ animationDelay: '160ms' }}>
-          Design complete solar systems in minutes. For professional solar installers and engineers (Pro mode) and everyday people (Simple mode). One tool, two ways to use it.
+          Evaluate custom inverter kVA sizing, solar array panel configurations, depth of battery storage, and cable wire cross-sections in minutes. Bundled NASA solar datasets, zero-latency calculation engines, and full professional project settings.
         </p>
 
         <div className="mkt-hero__actions animate-fade-up-in" style={{ animationDelay: '240ms' }}>
@@ -183,78 +351,11 @@ function Hero() {
         </div>
       </div>
 
-      {/* App mockup */}
-      <div className="mkt-hero__mockup animate-fade-up-in" style={{ animationDelay: '360ms' }}>
-        <AppMockup />
+      {/* Live Interactive Sizing Mockup */}
+      <div className="mkt-hero__mockup animate-fade-up-in" style={{ animationDelay: '360ms', width: '100%', maxWidth: '860px', marginTop: 'var(--space-16)' }}>
+        <InteractiveMockup />
       </div>
     </section>
-  );
-}
-
-// ─── App mockup preview ───────────────────────────────────────────────────────
-function AppMockup() {
-  return (
-    <div className="mkt-mockup" aria-hidden="true">
-      <div className="mkt-mockup__bar">
-        <span /><span /><span />
-      </div>
-      <div className="mkt-mockup__body">
-        {/* Sidebar */}
-        <div className="mkt-mockup__sidebar">
-          <div className="mkt-mockup__logo-mini">
-            <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '14px', height: '14px', color: 'var(--color-accent)' }}>
-              <circle cx="16" cy="16" r="10" stroke="currentColor" strokeWidth="2.5" strokeDasharray="4 2"/>
-              <path d="M17 6L9 17H16L15 26L23 15H16L17 6Z" fill="currentColor"/>
-            </svg>
-          </div>
-          {['Load Sizing', 'Battery Bank', 'Inverter Sizing', 'Solar Array', 'Wire Sizing'].map((s, i) => (
-            <div
-              key={s}
-              className={`mkt-mockup__step ${i === 1 ? 'mkt-mockup__step--active' : ''}`}
-            >
-              <span className="mkt-mockup__step-dot" />
-              {s}
-            </div>
-          ))}
-        </div>
-
-        {/* Content area */}
-        <div className="mkt-mockup__content">
-          <div className="mkt-mockup__section-title">Battery Bank Sizing</div>
-          <div className="mkt-mockup__fields">
-            {[
-              { label: 'Daily Energy', val: '4,800 Wh' },
-              { label: 'Days Autonomy', val: '2' },
-              { label: 'Depth of Discharge', val: '80%' },
-              { label: 'System Voltage', val: '48 V' },
-            ].map(f => (
-              <div key={f.label} className="mkt-mockup__field">
-                <span className="mkt-mockup__field-label">{f.label}</span>
-                <span className="mkt-mockup__field-val">{f.val}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Output panel */}
-        <div className="mkt-mockup__output">
-          <div className="mkt-mockup__out-title">Results</div>
-          {[
-            { label: 'BATTERIES', val: '8', unit: 'units' },
-            { label: 'BANK CAPACITY', val: '12.0', unit: 'kWh' },
-            { label: 'CHARGE CONTROLLER', val: '60', unit: 'A' },
-          ].map(k => (
-            <div key={k.label} className="mkt-mockup__kpi">
-              <span className="mkt-mockup__kpi-label">{k.label}</span>
-              <span className="mkt-mockup__kpi-val">
-                {k.val}
-                <span className="mkt-mockup__kpi-unit">{k.unit}</span>
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
   );
 }
 
@@ -270,9 +371,9 @@ function Stats() {
       <div className="mkt-container">
         <div className="mkt-stats__grid" ref={ref}>
           {[
-            { val: c1, suffix: '', label: 'Cities with NASA PSH Data' },
-            { val: c2, suffix: '', label: 'Rigorous Calculation Modules' },
-            { val: c3, suffix: ' / mo', prefix: '$', label: 'Pro Pricing Starts At' },
+            { val: c1, suffix: '', label: 'Global Cities with NASA PSH Data' },
+            { val: c2, suffix: '', label: 'Professional Sizing Modules' },
+            { val: c3, suffix: ' / mo', prefix: '$', label: 'Pro Workspace Starts At' },
           ].map((s) => (
             <div key={s.label} className="mkt-stat">
               <span className="mkt-stat__value">
@@ -291,23 +392,23 @@ function Stats() {
 const FEATURES = [
   {
     icon: <BarChart3 size={32} />,
-    title: 'Full System Sizing',
-    desc: 'Load analysis, battery bank, inverter, solar array, charge controller, and wire sizing — every step in one coherent flow.',
+    title: 'Integrated Sizing Calculations',
+    desc: 'Audit system loads, configure battery banks, specify inverter capacities, layout string configurations, size charge controllers, and evaluate cable wire sizes in one unified flow.',
   },
   {
     icon: <Globe2 size={32} />,
-    title: '74-City PSH Database',
-    desc: 'Pre-loaded peak sun hours for 74 cities across 8 regions, sourced from 20 years of NASA POWER satellite data.',
+    title: '74-City Climatology Data',
+    desc: 'Direct access to NASA POWER averaged peak sun hours (PSH) for 74 global cities locally, providing immediate zero-latency estimations without external API calls.',
   },
   {
     icon: <Zap size={32} />,
-    title: 'Live Calculations',
-    desc: 'Results update in real-time as you type. No submit buttons. No waiting. Instant engineering feedback.',
+    title: 'Offline-Safe Sizing Engine',
+    desc: 'Solisys runs entirely locally in the browser context. Perform professional-grade consultations on-site, fully offline-safe, and auto-sync calculations upon connection.',
   },
   {
     icon: <Sun size={32} />,
-    title: 'String Design Tool',
-    desc: 'MPPT string sizing with temperature-corrected Voc and Vmp. Validates against inverter input specs automatically.',
+    title: 'MPPT String Sizing',
+    desc: 'Input technical solar panel and inverter variables to automatically size valid array strings, validating temperature-corrected Voc and Vmp thresholds seamlessly.',
   },
 ];
 
@@ -319,11 +420,11 @@ function Features() {
         <div className="mkt-section-header">
           <div className="mkt-badge">Features</div>
           <h2 id="features-heading" className="mkt-section-title">
-            Everything you need.<br />
-            <span className="mkt-accent">Nothing you don't.</span>
+            Engineered for sizing.<br />
+            <span className="mkt-accent">Made simple.</span>
           </h2>
           <p className="mkt-section-sub">
-            Built for the full solar sizing workflow, from the very first watt-hour to the final cable cross-section.
+            Built from scratch to support clean, professional calculations, satisfying the full solar sizing workflow in seconds.
           </p>
         </div>
 
@@ -338,7 +439,7 @@ function Features() {
               <h3 className="mkt-feature-card__title">{f.title}</h3>
               <p className="mkt-feature-card__desc">{f.desc}</p>
               <a href="/app" onClick={(e) => navigateToPath('/app', e)} className="mkt-feature-card__link">
-                Try it <ArrowRight size={14} />
+                Try Sizing <ArrowRight size={14} />
               </a>
             </article>
           ))}
@@ -356,10 +457,10 @@ function CtaBanner() {
         <div className="mkt-cta__card">
           <div className="mkt-cta__glow" aria-hidden="true" />
           <h2 id="cta-heading" className="mkt-cta__title">
-            Ready to size your system?
+            Re-engineer your solar workflow
           </h2>
           <p className="mkt-cta__sub">
-            Free. No account. Works on any device. Start in seconds.
+            Design professional sizing blueprints, save reports as PDF, and share configurations instantly. No account required.
           </p>
           <a href="/app" onClick={(e) => navigateToPath('/app', e)} id="cta-open-app" className="btn btn--primary btn--lg">
             Open the Calculator
@@ -1108,104 +1209,46 @@ console.log(sizing.battery.totalBatteries); // => 2 batteries (24V bank)`;
 // ─── App Download Page ───────────────────────────────────────────────────────
 function DownloadPage() {
   return (
-    <div className="download-page animate-fade-in" style={{ paddingTop: '100px' }}>
-      <section className="mkt-container">
-        <div className="download-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px', alignItems: 'center', minHeight: '60dvh', padding: '40px 0' }}>
-          {/* Details */}
-          <div>
-            <div className="mkt-badge" style={{ marginBottom: '16px' }}>Mobile Sizing App</div>
-            <h1 className="mkt-section-title" style={{ textAlign: 'left', marginBottom: '20px' }}>Solisys on your phone.</h1>
-            <p className="mkt-section-sub" style={{ textAlign: 'left', marginBottom: '32px' }}>
-              Design customized, professional-grade solar systems on-site. Fully offline-safe. Auto-syncs directly with your web account.
-            </p>
+    <div className="download-page animate-fade-in" style={{ paddingTop: '120px', minHeight: '80dvh', display: 'flex', alignItems: 'center' }}>
+      <section className="mkt-container" style={{ width: '100%' }}>
+        <div style={{ textAlign: 'center', maxWidth: '640px', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--space-6)' }}>
+          <div className="mkt-badge" style={{ textTransform: 'uppercase', letterSpacing: 'var(--tracking-wider)' }}>Mobile Sizing App</div>
+          
+          <h1 className="mkt-section-title" style={{ fontSize: 'var(--text-display-xl)', lineHeight: 1.1 }}>
+            Solisys on your phone.<br/>
+            <span className="mkt-accent">Coming soon.</span>
+          </h1>
+          
+          <p className="mkt-section-sub" style={{ fontSize: 'var(--text-lg)', color: 'var(--color-text-secondary)', lineHeight: 1.6 }}>
+            We are engineering the native Solisys companion sizing app for iOS and Android. Run fully offline load audits on-site, evaluate real-time Voc string temperatures, and auto-sync solar system proposals directly with your cloud workspace.
+          </p>
 
-            {/* Badges */}
-            <div className="badge-group" style={{ display: 'flex', gap: '16px', marginBottom: '40px', flexWrap: 'wrap' }}>
-              <a href="https://apple.com" target="_blank" rel="noreferrer" className="btn btn--ghost" style={{ padding: '12px 24px', background: 'var(--color-surface)', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <Smartphone size={20} />
-                <div style={{ textAlign: 'left', lineHeight: 1.2 }}>
-                  <span style={{ fontSize: '10px', display: 'block', color: 'var(--color-text-secondary)' }}>Download on the</span>
-                  <span style={{ fontSize: '15px', fontWeight: 600 }}>App Store</span>
-                </div>
-              </a>
-              <a href="https://google.com" target="_blank" rel="noreferrer" className="btn btn--ghost" style={{ padding: '12px 24px', background: 'var(--color-surface)', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <Play size={20} />
-                <div style={{ textAlign: 'left', lineHeight: 1.2 }}>
-                  <span style={{ fontSize: '10px', display: 'block', color: 'var(--color-text-secondary)' }}>GET IT ON</span>
-                  <span style={{ fontSize: '15px', fontWeight: 600 }}>Google Play</span>
-                </div>
-              </a>
-            </div>
-
-            {/* Mobile checklist */}
-            <ul className="mobile-feat-list" style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <li style={{ display: 'flex', gap: '12px', alignItems: 'start' }}>
-                <CheckCircle size={18} style={{ color: 'var(--color-accent)', marginTop: '2px' }} />
-                <div>
-                  <h5 style={{ margin: 0, fontSize: '15px', fontWeight: 600 }}>One-Decision-Per-Screen Wizard</h5>
-                  <p style={{ margin: 0, fontSize: '13px', color: 'var(--color-text-secondary)' }}>An optimized 5-step flow designed specifically for quick customer consultations on active construction sites.</p>
-                </div>
-              </li>
-              <li style={{ display: 'flex', gap: '12px', alignItems: 'start' }}>
-                <Globe2 size={18} style={{ color: 'var(--color-accent)', marginTop: '2px' }} />
-                <div>
-                  <h5 style={{ margin: 0, fontSize: '15px', fontWeight: 600 }}>100% Offline-Safe Execution</h5>
-                  <p style={{ margin: 0, fontSize: '13px', color: 'var(--color-text-secondary)' }}>No network signal? No worries. All sizing calculations and NASA PSH data run fully offline locally on your device.</p>
-                </div>
-              </li>
-              <li style={{ display: 'flex', gap: '12px', alignItems: 'start' }}>
-                <Zap size={18} style={{ color: 'var(--color-accent)', marginTop: '2px' }} />
-                <div>
-                  <h5 style={{ margin: 0, fontSize: '15px', fontWeight: 600 }}>Instant WhatsApp Proposal Sharing</h5>
-                  <p style={{ margin: 0, fontSize: '13px', color: 'var(--color-text-secondary)' }}>Format results instantly as a beautiful technical breakdown message and dispatch it direct to customer contacts on WhatsApp.</p>
-                </div>
-              </li>
-            </ul>
+          <div style={{
+            marginTop: 'var(--space-4)',
+            padding: '24px 32px',
+            borderRadius: 'var(--radius-xl)',
+            background: 'var(--color-surface)',
+            border: '1px solid var(--color-border)',
+            boxShadow: 'var(--shadow-lg)',
+            display: 'inline-flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 'var(--space-2)',
+            maxWidth: '360px',
+            width: '100%'
+          }}>
+            <Smartphone size={32} style={{ color: 'var(--color-accent)', marginBottom: '8px' }} />
+            <span style={{ fontSize: '15px', fontWeight: 600, color: 'var(--color-text-primary)' }}>Launching Q4 2026</span>
+            <span style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>Sign up for priority beta access directly inside your web app settings.</span>
           </div>
 
-          {/* QR Code Column */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-            <div className="qr-card" style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: '16px', padding: '32px', textAlign: 'center', boxShadow: 'var(--shadow-lg)', maxWidth: '320px' }}>
-              <div className="qr-placeholder" style={{ width: '200px', height: '200px', background: 'white', borderRadius: '8px', padding: '10px', margin: '0 auto 20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                {/* SVG representing a futuristic QR code */}
-                <svg viewBox="0 0 100 100" style={{ width: '100%', height: '100%', fill: '#0A1F0D' }}>
-                  <rect x="0" y="0" width="25" height="25" />
-                  <rect x="5" y="5" width="15" height="15" fill="white" />
-                  <rect x="9" y="9" width="7" height="7" />
-                  
-                  <rect x="75" y="0" width="25" height="25" />
-                  <rect x="80" y="5" width="15" height="15" fill="white" />
-                  <rect x="84" y="84" width="7" height="7" />
-                  
-                  <rect x="0" y="75" width="25" height="25" />
-                  <rect x="5" y="80" width="15" height="15" fill="white" />
-                  <rect x="9" y="84" width="7" height="7" />
-
-                  {/* Random pixels */}
-                  <rect x="35" y="5" width="5" height="10" />
-                  <rect x="45" y="0" width="10" height="5" />
-                  <rect x="60" y="10" width="5" height="5" />
-                  <rect x="35" y="20" width="15" height="5" />
-                  <rect x="40" y="30" width="5" height="20" />
-                  <rect x="10" y="40" width="15" height="5" />
-                  <rect x="0" y="55" width="5" height="10" />
-                  <rect x="20" y="60" width="10" height="5" />
-                  <rect x="30" y="70" width="5" height="20" />
-                  <rect x="45" y="80" width="15" height="5" />
-                  <rect x="60" y="85" width="5" height="10" />
-                  <rect x="80" y="35" width="10" height="10" />
-                  <rect x="90" y="50" width="5" height="15" />
-                  <rect x="65" y="60" width="10" height="5" />
-                  <rect x="75" y="70" width="10" height="10" />
-                </svg>
-              </div>
-              <h4 style={{ margin: '0 0 8px', fontSize: '16px', fontWeight: 600 }}>Scan to Download</h4>
-              <p style={{ margin: 0, fontSize: '13px', color: 'var(--color-text-secondary)' }}>Point your phone camera to scan the code and load store listings instantly.</p>
-            </div>
+          <div style={{ marginTop: 'var(--space-4)' }}>
+            <a href="/" onClick={(e) => navigateToPath('/', e)} className="btn btn--ghost btn--md">
+              ← Return Home
+            </a>
           </div>
         </div>
       </section>
-      <CtaBanner />
     </div>
   );
 }
