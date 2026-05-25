@@ -1093,9 +1093,10 @@ console.log(sizing.battery.totalBatteries); // => 2 batteries (24V bank)`;
         {/* Install box for npm */}
         {apiTab === 'npm' && (
           <div style={{ textAlign: 'center', marginBottom: '64px' }}>
-            <div className="install-tag" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', border: '1px solid var(--color-border)', borderRadius: '8px', background: 'var(--color-bg-deep)', fontFamily: 'var(--font-mono)', fontSize: '14px' }}>
-              <span style={{ color: 'var(--color-text-secondary)' }}>$</span>
-              <span>npm install @charlzx/solisys-calc</span>
+            <div className="install-tag" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-lg)', background: 'var(--color-bg-deep)', fontSize: '14px' }}>
+              <span style={{ color: 'var(--color-accent)', fontWeight: 600, letterSpacing: 'var(--tracking-wide)', fontSize: '11px', textTransform: 'uppercase' }}>NPM Package</span>
+              <span style={{ color: 'var(--color-border-subtle)', margin: '0 4px' }}>|</span>
+              <span style={{ fontFamily: 'var(--font-mono)' }}>npm install @charlzx/solisys-calc</span>
               <button
                 style={{ background: 'none', border: 'none', color: 'var(--color-accent)', cursor: 'pointer', marginLeft: '12px' }}
                 onClick={() => {
