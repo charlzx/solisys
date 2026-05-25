@@ -2,19 +2,31 @@ import { useState, useCallback, useEffect } from 'react';
 import Dashboard from './pages/Dashboard';
 import Calculator from './pages/Calculator';
 import Settings from './pages/Settings';
+import Marketing from './pages/Marketing';
 import { ToastProvider, useToast } from './context/ToastContext';
 import { loadProjectsFromStorage, saveProjectsToStorage, createDefaultProject } from './lib/utils';
 
-function parseRoute() {
-  const path = window.location.pathname;
-  const projectMatch = path.match(/^\/project\/([^/]+)/);
-  if (projectMatch) return { page: 'calculator', projectId: projectMatch[1] };
-  if (path === '/settings') return { page: 'settings', projectId: null };
-  return { page: 'dashboard', projectId: null };
+// ─── Router ──────────────────────────────────────────────────────────────────
+type Page = 'marketing' | 'dashboard' | 'calculator' | 'settings';
+
+interface Route {
+  page: Page;
+  projectId: string | null;
 }
 
+function parseRoute(): Route {
+  const path = window.location.pathname;
+  if (path === '/' || path === '') return { page: 'marketing', projectId: null };
+  const projectMatch = path.match(/^\/app\/project\/([^/]+)/);
+  if (projectMatch) return { page: 'calculator', projectId: projectMatch[1] };
+  if (path === '/app/settings') return { page: 'settings', projectId: null };
+  if (path.startsWith('/app')) return { page: 'dashboard', projectId: null };
+  return { page: 'marketing', projectId: null };
+}
+
+// ─── App (inner, has Toast context) ──────────────────────────────────────────
 function AppInner() {
-  const [route, setRoute] = useState(parseRoute);
+  const [route, setRoute] = useState<Route>(parseRoute);
   const [projects, setProjects] = useState(() => loadProjectsFromStorage());
   const { addToast } = useToast();
 
@@ -24,10 +36,11 @@ function AppInner() {
     return () => window.removeEventListener('popstate', onPop);
   }, []);
 
-  const navigate = useCallback((page, projectId = null) => {
+  const navigate = useCallback((page: Page, projectId: string | null = null) => {
     let url = '/';
-    if (page === 'calculator' && projectId) url = `/project/${projectId}`;
-    else if (page === 'settings') url = '/settings';
+    if (page === 'calculator' && projectId) url = `/app/project/${projectId}`;
+    else if (page === 'settings') url = '/app/settings';
+    else if (page === 'dashboard') url = '/app';
     window.history.pushState(null, '', url);
     setRoute({ page, projectId });
   }, []);
@@ -44,31 +57,31 @@ function AppInner() {
     navigate('calculator', newProject.id);
   }, [projects, navigate]);
 
-  const handleOpenProject = useCallback((id) => {
+  const handleOpenProject = useCallback((id: string) => {
     navigate('calculator', id);
   }, [navigate]);
 
-  const handleDeleteProject = useCallback((id) => {
-    const updated = projects.filter((p) => p.id !== id);
+  const handleDeleteProject = useCallback((id: string) => {
+    const updated = projects.filter((p: { id: string }) => p.id !== id);
     saveProjectsToStorage(updated);
     setProjects(updated);
   }, [projects]);
 
-  const handleUpdateProject = useCallback((id, changes) => {
-    const updated = projects.map((p) =>
+  const handleUpdateProject = useCallback((id: string, changes: Record<string, unknown>) => {
+    const updated = projects.map((p: { id: string }) =>
       p.id === id ? { ...p, ...changes, lastUpdated: new Date().toISOString() } : p
     );
     saveProjectsToStorage(updated);
     setProjects(updated);
   }, [projects]);
 
-  const handleDuplicateProject = useCallback((id) => {
-    const source = projects.find(p => p.id === id);
+  const handleDuplicateProject = useCallback((id: string) => {
+    const source = projects.find((p: { id: string }) => p.id === id);
     if (!source) return;
     const clone = {
-      ...JSON.parse(JSON.stringify(source)),
+      ...(JSON.parse(JSON.stringify(source)) as Record<string, unknown>),
       id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
-      projectName: (source.projectName || 'Untitled Project') + ' (Copy)',
+      projectName: ((source as { projectName?: string }).projectName || 'Untitled Project') + ' (Copy)',
       lastUpdated: new Date().toISOString(),
     };
     const updated = [...projects, clone];
@@ -85,6 +98,11 @@ function AppInner() {
   const handleOpenSettings = useCallback(() => {
     navigate('settings');
   }, [navigate]);
+
+  // Marketing page (root)
+  if (route.page === 'marketing') {
+    return <Marketing />;
+  }
 
   if (route.page === 'calculator' && route.projectId) {
     return (
