@@ -282,7 +282,7 @@ export default function Dashboard({ projects = [], onOpenProject, onNewProject, 
               </Button>
             )}
 
-            <Button variant="primary" onClick={onNewProject}>
+            <Button variant="primary" onClick={() => setIsNewProjectModalOpen(true)}>
               <Plus size={16} />
               New Project
             </Button>
@@ -438,6 +438,147 @@ export default function Dashboard({ projects = [], onOpenProject, onNewProject, 
                 </Button>
                 <Button variant="primary" onClick={handleEditSave}>
                   Save
+                </Button>
+              </div>
+            </div>
+          </Modal>
+
+          <Modal
+            isOpen={isNewProjectModalOpen}
+            onClose={() => {
+              setIsNewProjectModalOpen(false);
+              setNewProjectName('');
+              setNewClientName('');
+              setNewProjectMode('pro');
+            }}
+            title="Create New Project"
+          >
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+              <InputField
+                label="Project Name"
+                type="text"
+                value={newProjectName}
+                onChange={(e) => setNewProjectName(e.target.value)}
+                placeholder="e.g. Main Street Installation"
+                required
+              />
+              <InputField
+                label="Client Name"
+                type="text"
+                value={newClientName}
+                onChange={(e) => setNewClientName(e.target.value)}
+                placeholder=" Alice Smith (Optional)"
+              />
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+                <span style={{
+                  fontSize: 'var(--text-xs)',
+                  fontWeight: 'var(--weight-semibold)',
+                  color: 'var(--color-text-secondary)',
+                  textTransform: 'uppercase',
+                  letterSpacing: 'var(--tracking-wider)',
+                }}>
+                  Sizing Mode
+                </span>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', marginTop: 'var(--space-1)' }}>
+                  {/* Simple Mode Radio Option */}
+                  <label style={{
+                    display: 'flex',
+                    alignItems: 'start',
+                    gap: '12px',
+                    padding: 'var(--space-3) var(--space-4)',
+                    borderRadius: 'var(--radius-md)',
+                    border: `1px solid ${newProjectMode === 'simple' ? 'var(--color-primary-500)' : 'var(--color-border)'}`,
+                    background: newProjectMode === 'simple' ? 'color-mix(in srgb, var(--color-primary-500) 5%, transparent)' : 'var(--color-surface)',
+                    cursor: 'pointer',
+                    transition: 'all var(--duration-fast) var(--ease-default)',
+                  }}>
+                    <input
+                      type="radio"
+                      name="newProjectMode"
+                      value="simple"
+                      checked={newProjectMode === 'simple'}
+                      onChange={() => setNewProjectMode('simple')}
+                      style={{
+                        marginTop: '3px',
+                        accentColor: 'var(--color-primary-500)',
+                        cursor: 'pointer',
+                      }}
+                    />
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                      <span style={{
+                        fontSize: 'var(--text-sm)',
+                        fontWeight: 'var(--weight-semibold)',
+                        color: 'var(--color-text-primary)',
+                      }}>
+                        Simple Mode
+                      </span>
+                      <span style={{
+                        fontSize: '11px',
+                        color: 'var(--color-text-muted)',
+                        lineHeight: '1.4',
+                      }}>
+                        5-step wizard using plain-language questions and standard load estimates.
+                      </span>
+                    </div>
+                  </label>
+
+                  {/* Pro Mode Radio Option */}
+                  <label style={{
+                    display: 'flex',
+                    alignItems: 'start',
+                    gap: '12px',
+                    padding: 'var(--space-3) var(--space-4)',
+                    borderRadius: 'var(--radius-md)',
+                    border: `1px solid ${newProjectMode === 'pro' ? 'var(--color-primary-500)' : 'var(--color-border)'}`,
+                    background: newProjectMode === 'pro' ? 'color-mix(in srgb, var(--color-primary-500) 5%, transparent)' : 'var(--color-surface)',
+                    cursor: 'pointer',
+                    transition: 'all var(--duration-fast) var(--ease-default)',
+                  }}>
+                    <input
+                      type="radio"
+                      name="newProjectMode"
+                      value="pro"
+                      checked={newProjectMode === 'pro'}
+                      onChange={() => setNewProjectMode('pro')}
+                      style={{
+                        marginTop: '3px',
+                        accentColor: 'var(--color-primary-500)',
+                        cursor: 'pointer',
+                      }}
+                    />
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                      <span style={{
+                        fontSize: 'var(--text-sm)',
+                        fontWeight: 'var(--weight-semibold)',
+                        color: 'var(--color-text-primary)',
+                      }}>
+                        Pro Mode
+                      </span>
+                      <span style={{
+                        fontSize: '11px',
+                        color: 'var(--color-text-muted)',
+                        lineHeight: '1.4',
+                      }}>
+                        Full professional calculations including Voc string limits and wire sizing.
+                      </span>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--space-3)', marginTop: 'var(--space-2)' }}>
+                <Button variant="secondary" onClick={() => {
+                  setIsNewProjectModalOpen(false);
+                  setNewProjectName('');
+                  setNewClientName('');
+                  setNewProjectMode('pro');
+                }}>
+                  Cancel
+                </Button>
+                <Button variant="primary" onClick={handleCreateProjectSubmit} disabled={!newProjectName.trim()}>
+                  Create Design
                 </Button>
               </div>
             </div>
