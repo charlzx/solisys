@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solisys Sizing Widget — Sandbox Sandbox</title>
+  <style>
+    body {
+      background: #f1f3f1;
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+    .sandbox-container {
+      width: 100%;
+      max-width: 640px;
+    }
+    h1 {
+      font-size: 24px;
+      color: #0a1f0d;
+      margin: 0;
+    }
+    .theme-switcher {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    button {
+      padding: 8px 16px;
+      border: 1px solid #c2d4c4;
+      background: white;
+      color: #0a1f0d;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button.active {
+      background: #5e9e28;
+      color: white;
+      border-color: #5e9e28;
+    }
+  </style>
+</head>
+<body>
+  <h1>Solisys Sizing Widget Sandbox</h1>
+  <p style="color: #4a5c4e; margin: 0 0 20px 0; text-align: center;">Embeddable Lead Capture Sizing Tool</p>
+
+  <div class="theme-switcher">
+    <button id="btn-light" class="active">Light Theme</button>
+    <button id="btn-dark">Dark Theme</button>
+    <button id="btn-accent">Orange Accent</button>
+  </div>
+
+  <div class="sandbox-container">
+    <!-- Mount Container -->
+    <div id="solisys-widget"></div>
+  </div>
+
+  <script type="module">
+    import SolisysWidget from './src/index.ts';
+
+    // Initialize widget
+    SolisysWidget.init({
+      containerId: 'solisys-widget',
+      siteId: 'ws_live_test12345',
+      mode: 'simple',
+      theme: 'light',
+      companyName: 'Sunshine Solar Ltd',
+      logoUrl: 'https://cdn-icons-png.flaticon.com/512/2924/2924513.png',
+      currency: 'USD',
+      leadCapture: {
+        enabled: true,
+        webhookUrl: 'https://httpbin.org/post',
+        ctaText: 'Secure My Free Solar Quote'
+      }
+    });
+
+    const widgetEl = document.querySelector('solisys-solar-widget');
+
+    document.getElementById('btn-light').addEventListener('click', (e) => {
+      document.querySelectorAll('.theme-switcher button').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      const el = document.querySelector('solisys-solar-widget');
+      if (el) el.setAttribute('data-theme', 'light');
+    });
+
+    document.getElementById('btn-dark').addEventListener('click', (e) => {
+      document.querySelectorAll('.theme-switcher button').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      const el = document.querySelector('solisys-solar-widget');
+      if (el) el.setAttribute('data-theme', 'dark');
+    });
+
+    document.getElementById('btn-accent').addEventListener('click', (e) => {
+      document.querySelectorAll('.theme-switcher button').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      const el = document.querySelector('solisys-solar-widget');
+      if (el) {
+        el.setAttribute('data-accent-color', '#ff5722');
+      }
+    });
+  </script>
+</body>
+</html>
