@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { CaretLeft, CaretRight, Sun, Lightning as Zap, House, Check, Download, ArrowRight, ArrowSquareOut as Share, Plus, Minus, Trash, Sliders } from '@phosphor-icons/react';
+import { CaretLeft, CaretRight, Sun, Lightning as Zap, House, Check, Download, ArrowRight, ArrowSquareOut as Share, Plus, Minus, Trash, Sliders, Lightbulb, Wind, Snowflake, Television, Laptop, Thermometer, Spinner } from '@phosphor-icons/react';
 import Card from '../ui/Card';
 import InputField from '../ui/InputField';
 import SelectField from '../ui/SelectField';
@@ -12,13 +12,13 @@ import { downloadPDF } from '../../lib/export/generatePDF';
 
 // Standard plain-language appliance options for easy preset addition
 const SIMPLE_APPLIANCES = [
-  { name: 'LED Lights', wattage: 10, hours: 6, icon: '💡' },
-  { name: 'Ceiling Fans', wattage: 75, hours: 8, icon: '🌀' },
-  { name: 'Refrigerator', wattage: 150, hours: 24, icon: '❄️' },
-  { name: 'TV (LED 40")', wattage: 80, hours: 5, icon: '📺' },
-  { name: 'Laptop / Charger', wattage: 65, hours: 4, icon: '💻' },
-  { name: 'Air Conditioner', wattage: 1200, hours: 6, icon: '🍃' },
-  { name: 'Washing Machine', wattage: 500, hours: 1, icon: '🧺' },
+  { name: 'LED Lights', wattage: 10, hours: 6, icon: Lightbulb },
+  { name: 'Ceiling Fans', wattage: 75, hours: 8, icon: Wind },
+  { name: 'Refrigerator', wattage: 150, hours: 24, icon: Snowflake },
+  { name: 'TV (LED 40")', wattage: 80, hours: 5, icon: Television },
+  { name: 'Laptop / Charger', wattage: 65, hours: 4, icon: Laptop },
+  { name: 'Air Conditioner', wattage: 1200, hours: 6, icon: Thermometer },
+  { name: 'Washing Machine', wattage: 500, hours: 1, icon: Spinner },
 ];
 
 const PRESET_PACKAGES = {
@@ -192,7 +192,7 @@ export default function SimpleMode({
   };
 
   const handleWhatsAppShare = () => {
-    const text = `☀️ *Solisys Solar Sizing Summary* ☀️\n\nI just designed my solar system on Solisys! Here are my recommended details:\n- *Solar Array Size*: ${formatNumber(calculations.actualArrayKw, 2)} kW\n- *Panel Count*: ${calculations.numberOfPanels} panels (${project.panelWattage}W each)\n- *Battery Capacity*: ${formatNumber(calculations.requiredBankCapacityWh / 1000, 1)} kWh (${calculations.totalNumberOfBatteries} batteries)\n- *Inverter Sizing*: ${calculations.recommendedInverterKva} kVA\n\nBuild yours at Solisys.dev!`;
+    const text = `*Solisys Solar Sizing Summary*\n\nI just designed my solar system on Solisys! Here are my recommended details:\n- *Solar Array Size*: ${formatNumber(calculations.actualArrayKw, 2)} kW\n- *Panel Count*: ${calculations.numberOfPanels} panels (${project.panelWattage}W each)\n- *Battery Capacity*: ${formatNumber(calculations.requiredBankCapacityWh / 1000, 1)} kWh (${calculations.totalNumberOfBatteries} batteries)\n- *Inverter Sizing*: ${calculations.recommendedInverterKva} kVA\n\nBuild yours at Solisys.dev!`;
     const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
     window.open(url, '_blank');
   };
@@ -344,7 +344,9 @@ export default function SimpleMode({
                     return (
                       <div key={app.name} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-                          <span style={{ fontSize: '18px' }}>{app.icon}</span>
+                          <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '24px', height: '24px', color: 'var(--color-primary-500)' }}>
+                            <app.icon size={20} />
+                          </span>
                           <div>
                             <span style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-primary)', fontWeight: 'var(--weight-medium)' }}>{app.name}</span>
                             <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)', marginLeft: 'var(--space-2)' }}>({app.wattage}W)</span>
