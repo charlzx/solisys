@@ -11,6 +11,7 @@ import WireSizing from '../components/sections/WireSizing';
 import Diagram from '../components/sections/Diagram';
 import CostEstimation from '../components/sections/CostEstimation';
 import ExportSection from '../components/sections/ExportSection';
+import SimpleMode from '../components/sections/SimpleMode';
 import { useProject } from '../hooks/useProject';
 import { useCalculations } from '../hooks/useCalculations';
 import { useValidation } from '../hooks/useValidation';
@@ -232,6 +233,11 @@ export default function Calculator({ projectId, onBack, theme = 'dark', onToggle
     handleNavigate('export');
   }, [handleNavigate]);
 
+  const handleToggleSizingMode = useCallback(() => {
+    const next = project.sizingMode === 'simple' ? 'pro' : 'simple';
+    updateField('sizingMode', next);
+  }, [project.sizingMode, updateField]);
+
   const handleGenerateReport = useCallback(() => {
     setOutputOpen(false);
     setTimeout(() => {
@@ -321,9 +327,11 @@ export default function Calculator({ projectId, onBack, theme = 'dark', onToggle
         isDesktop={isDesktop}
         theme={theme}
         onToggleTheme={onToggleTheme}
+        sizingMode={project.sizingMode || 'pro'}
+        onToggleSizingMode={handleToggleSizingMode}
       />
 
-      {(isMobile || isTablet) && sidebarOpen && (
+      {project.sizingMode !== 'simple' && (isMobile || isTablet) && sidebarOpen && (
         <div
           onClick={() => setSidebarOpen(false)}
           style={{
@@ -336,31 +344,33 @@ export default function Calculator({ projectId, onBack, theme = 'dark', onToggle
         />
       )}
 
-      <Sidebar
-        activeSection={activeSection}
-        sectionStatuses={sectionStatuses}
-        onNavigate={handleNavigate}
-        onBackToDashboard={onBack}
-        collapsed={isDesktop ? sidebarCollapsed : false}
-        onToggleCollapse={toggleSidebar}
-        visible={showSidebar}
-        isMobile={isMobile || isTablet}
-        systemType={project.systemType || 'off-grid'}
-        onInterpret={() => {
-          const coreIds = (project.systemType || 'off-grid') === 'grid-tied'
-            ? ['load', 'inverter', 'solar']
-            : ['load', 'inverter', 'battery', 'solar'];
-          const allComplete = coreIds.every((id) => sectionStatuses[id] === 'complete');
-          if (!allComplete) {
-            const count = coreIds.length;
-            addToast(`Complete all ${count} core sections first`, 'info');
-            return;
-          }
-          setInterpretOpen(true);
-        }}
-      />
+      {project.sizingMode !== 'simple' && (
+        <Sidebar
+          activeSection={activeSection}
+          sectionStatuses={sectionStatuses}
+          onNavigate={handleNavigate}
+          onBackToDashboard={onBack}
+          collapsed={isDesktop ? sidebarCollapsed : false}
+          onToggleCollapse={toggleSidebar}
+          visible={showSidebar}
+          isMobile={isMobile || isTablet}
+          systemType={project.systemType || 'off-grid'}
+          onInterpret={() => {
+            const coreIds = (project.systemType || 'off-grid') === 'grid-tied'
+              ? ['load', 'inverter', 'solar']
+              : ['load', 'inverter', 'battery', 'solar'];
+            const allComplete = coreIds.every((id) => sectionStatuses[id] === 'complete');
+            if (!allComplete) {
+              const count = coreIds.length;
+              addToast(`Complete all ${count} core sections first`, 'info');
+              return;
+            }
+            setInterpretOpen(true);
+          }}
+        />
+      )}
 
-      {(isMobile || isTablet) && outputOpen && (
+      {project.sizingMode !== 'simple' && (isMobile || isTablet) && outputOpen && (
         <div
           onClick={() => setOutputOpen(false)}
           style={{
@@ -373,21 +383,23 @@ export default function Calculator({ projectId, onBack, theme = 'dark', onToggle
         />
       )}
 
-      <OutputPanel
-        calculations={outputCalcs}
-        validationResults={validationResults}
-        onGenerateReport={handleGenerateReport}
-        visible={showOutput}
-        isMobile={isMobile || isTablet}
-        onClose={() => setOutputOpen(false)}
-        systemType={project.systemType || 'off-grid'}
-      />
+      {project.sizingMode !== 'simple' && (
+        <OutputPanel
+          calculations={outputCalcs}
+          validationResults={validationResults}
+          onGenerateReport={handleGenerateReport}
+          visible={showOutput}
+          isMobile={isMobile || isTablet}
+          onClose={() => setOutputOpen(false)}
+          systemType={project.systemType || 'off-grid'}
+        />
+      )}
 
       <main
         ref={mainRef}
         style={{
-          marginLeft: mainMarginLeft,
-          marginRight: mainMarginRight,
+          marginLeft: project.sizingMode === 'simple' ? '0' : mainMarginLeft,
+          marginRight: project.sizingMode === 'simple' ? '0' : mainMarginRight,
           paddingTop: '56px',
           transition: `margin-left var(--duration-normal) var(--ease-default)`,
           minHeight: '100vh',
@@ -401,190 +413,205 @@ export default function Calculator({ projectId, onBack, theme = 'dark', onToggle
           flexDirection: 'column',
           gap: isMobile ? 'var(--space-10)' : 'var(--space-16)',
         }}>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
-            gap: 'var(--space-3)',
-          }}>
-            {SYSTEM_TYPE_OPTIONS.map((opt) => {
-              const isActive = (project.systemType || 'off-grid') === opt.value;
-              const IconComp = opt.value === 'off-grid' ? Sun : opt.value === 'hybrid' ? Zap : UtilityPole;
-              return (
+          {project.sizingMode === 'simple' ? (
+            <SimpleMode
+              project={project}
+              updateField={updateField}
+              setProject={setProject}
+              calculations={calculations}
+              panels={panels}
+              batteries={batteries}
+              inverters={inverters}
+              onSwitchToPro={handleToggleSizingMode}
+            />
+          ) : (
+            <>
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+                gap: 'var(--space-3)',
+              }}>
+                {SYSTEM_TYPE_OPTIONS.map((opt) => {
+                  const isActive = (project.systemType || 'off-grid') === opt.value;
+                  const IconComp = opt.value === 'off-grid' ? Sun : opt.value === 'hybrid' ? Zap : UtilityPole;
+                  return (
+                    <button
+                      key={opt.value}
+                      onClick={() => updateField('systemType', opt.value)}
+                      style={{
+                        display: 'flex',
+                        flexDirection: isMobile ? 'row' : 'column',
+                        alignItems: 'center',
+                        gap: isMobile ? 'var(--space-3)' : 'var(--space-2)',
+                        padding: isMobile ? 'var(--space-3) var(--space-4)' : 'var(--space-4) var(--space-3)',
+                        background: isActive ? 'color-mix(in srgb, var(--color-primary-500) 10%, transparent)' : 'var(--color-surface)',
+                        border: isActive ? '2px solid var(--color-primary-500)' : '1px solid var(--color-border)',
+                        borderRadius: 'var(--radius-md)',
+                        cursor: 'pointer',
+                        transition: 'all var(--duration-normal) var(--ease-default)',
+                        textAlign: isMobile ? 'left' : 'center',
+                      }}
+                    >
+                      <IconComp size={isMobile ? 18 : 22} style={{ color: isActive ? 'var(--color-primary-500)' : 'var(--color-text-secondary)', flexShrink: 0 }} />
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                        <span style={{
+                          fontFamily: 'var(--font-body)',
+                          fontSize: isMobile ? 'var(--text-sm)' : 'var(--text-base)',
+                          fontWeight: 'var(--weight-semibold)',
+                          color: isActive ? 'var(--color-text-primary)' : 'var(--color-text-secondary)',
+                        }}>
+                          {opt.label}
+                        </span>
+                        <span style={{
+                          fontFamily: 'var(--font-body)',
+                          fontSize: 'var(--text-xs)',
+                          color: isActive ? 'var(--color-primary-400)' : 'var(--color-text-muted)',
+                          textAlign: isMobile ? 'left' : 'center',
+                          lineHeight: 'var(--leading-snug)',
+                        }}>
+                          {opt.description}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div style={{
+                background: 'var(--color-surface)',
+                border: '1px solid var(--color-border-subtle)',
+                borderRadius: 'var(--radius-md)',
+                overflow: 'hidden',
+              }}>
                 <button
-                  key={opt.value}
-                  onClick={() => updateField('systemType', opt.value)}
+                  onClick={() => setNotesOpen(o => !o)}
                   style={{
                     display: 'flex',
-                    flexDirection: isMobile ? 'row' : 'column',
                     alignItems: 'center',
-                    gap: isMobile ? 'var(--space-3)' : 'var(--space-2)',
-                    padding: isMobile ? 'var(--space-3) var(--space-4)' : 'var(--space-4) var(--space-3)',
-                    background: isActive ? 'color-mix(in srgb, var(--color-primary-500) 10%, transparent)' : 'var(--color-surface)',
-                    border: isActive ? '2px solid var(--color-primary-500)' : '1px solid var(--color-border)',
-                    borderRadius: 'var(--radius-md)',
-                    cursor: 'pointer',
-                    transition: 'all var(--duration-normal) var(--ease-default)',
-                    textAlign: isMobile ? 'left' : 'center',
-                  }}
-                >
-                  <IconComp size={isMobile ? 18 : 22} style={{ color: isActive ? 'var(--color-primary-500)' : 'var(--color-text-secondary)', flexShrink: 0 }} />
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                    <span style={{
-                      fontFamily: 'var(--font-body)',
-                      fontSize: isMobile ? 'var(--text-sm)' : 'var(--text-base)',
-                      fontWeight: 'var(--weight-semibold)',
-                      color: isActive ? 'var(--color-text-primary)' : 'var(--color-text-secondary)',
-                    }}>
-                      {opt.label}
-                    </span>
-                    <span style={{
-                      fontFamily: 'var(--font-body)',
-                      fontSize: 'var(--text-xs)',
-                      color: isActive ? 'var(--color-primary-400)' : 'var(--color-text-muted)',
-                      textAlign: isMobile ? 'left' : 'center',
-                      lineHeight: 'var(--leading-snug)',
-                    }}>
-                      {opt.description}
-                    </span>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-
-          <div style={{
-            background: 'var(--color-surface)',
-            border: '1px solid var(--color-border-subtle)',
-            borderRadius: 'var(--radius-md)',
-            overflow: 'hidden',
-          }}>
-            <button
-              onClick={() => setNotesOpen(o => !o)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 'var(--space-2)',
-                width: '100%',
-                padding: 'var(--space-3) var(--space-4)',
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                color: 'var(--color-text-muted)',
-                fontFamily: 'var(--font-body)',
-                fontSize: 'var(--text-sm)',
-              }}
-            >
-              <StickyNote size={14} />
-              <span>Project Notes</span>
-              {project.notes && !notesOpen && (
-                <span style={{
-                  marginLeft: 'var(--space-2)',
-                  width: '6px',
-                  height: '6px',
-                  borderRadius: 'var(--radius-full)',
-                  background: 'var(--color-primary-500)',
-                  flexShrink: 0,
-                }} />
-              )}
-              <span style={{ marginLeft: 'auto' }}>
-                {notesOpen ? <CaretUp size={14} /> : <CaretDown size={14} />}
-              </span>
-            </button>
-            {notesOpen && (
-              <div style={{ padding: '0 var(--space-4) var(--space-4)' }}>
-                <textarea
-                  value={project.notes || ''}
-                  onChange={(e) => updateField('notes', e.target.value)}
-                  placeholder="Site notes, client preferences, installation remarks..."
-                  rows={4}
-                  style={{
+                    gap: 'var(--space-2)',
                     width: '100%',
-                    background: 'color-mix(in srgb, var(--color-text-primary) 3%, transparent)',
-                    border: '1px solid var(--color-border)',
-                    borderRadius: 'var(--radius-sm)',
-                    color: 'var(--color-text-primary)',
+                    padding: 'var(--space-3) var(--space-4)',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    color: 'var(--color-text-muted)',
                     fontFamily: 'var(--font-body)',
                     fontSize: 'var(--text-sm)',
-                    padding: 'var(--space-3)',
-                    resize: 'vertical',
-                    outline: 'none',
-                    lineHeight: 'var(--leading-relaxed)',
-                    boxSizing: 'border-box',
                   }}
-                />
+                >
+                  <StickyNote size={14} />
+                  <span>Project Notes</span>
+                  {project.notes && !notesOpen && (
+                    <span style={{
+                      marginLeft: 'var(--space-2)',
+                      width: '6px',
+                      height: '6px',
+                      borderRadius: 'var(--radius-full)',
+                      background: 'var(--color-primary-500)',
+                      flexShrink: 0,
+                    }} />
+                  )}
+                  <span style={{ marginLeft: 'auto' }}>
+                    {notesOpen ? <CaretUp size={14} /> : <CaretDown size={14} />}
+                  </span>
+                </button>
+                {notesOpen && (
+                  <div style={{ padding: '0 var(--space-4) var(--space-4)' }}>
+                    <textarea
+                      value={project.notes || ''}
+                      onChange={(e) => updateField('notes', e.target.value)}
+                      placeholder="Site notes, client preferences, installation remarks..."
+                      rows={4}
+                      style={{
+                        width: '100%',
+                        background: 'color-mix(in srgb, var(--color-text-primary) 3%, transparent)',
+                        border: '1px solid var(--color-border)',
+                        borderRadius: 'var(--radius-sm)',
+                        color: 'var(--color-text-primary)',
+                        fontFamily: 'var(--font-body)',
+                        fontSize: 'var(--text-sm)',
+                        padding: 'var(--space-3)',
+                        resize: 'vertical',
+                        outline: 'none',
+                        lineHeight: 'var(--leading-relaxed)',
+                        boxSizing: 'border-box',
+                      }}
+                    />
+                  </div>
+                )}
               </div>
-            )}
-          </div>
 
-          <LoadAnalysis
-            project={project}
-            updateField={updateField}
-            updateAppliance={updateAppliance}
-            addAppliance={addAppliance}
-            removeAppliance={removeAppliance}
-            calculations={calculations}
-            setProject={setProject}
-          />
+              <LoadAnalysis
+                project={project}
+                updateField={updateField}
+                updateAppliance={updateAppliance}
+                addAppliance={addAppliance}
+                removeAppliance={removeAppliance}
+                calculations={calculations}
+                setProject={setProject}
+              />
 
-          <InverterSizing
-            project={project}
-            updateField={updateField}
-            calculations={calculations}
-            selectedInverter={selectedInverter}
-            inverters={inverters}
-          />
+              <InverterSizing
+                project={project}
+                updateField={updateField}
+                calculations={calculations}
+                selectedInverter={selectedInverter}
+                inverters={inverters}
+              />
 
-          <BatterySizing
-            project={project}
-            updateField={updateField}
-            calculations={calculations}
-            selectedBattery={selectedBattery}
-            batteries={batteries}
-          />
+              <BatterySizing
+                project={project}
+                updateField={updateField}
+                calculations={calculations}
+                selectedBattery={selectedBattery}
+                batteries={batteries}
+              />
 
-          <SolarArray
-            project={project}
-            calculations={calculations}
-            selectedPanel={selectedPanel}
-            selectedInverter={selectedInverter}
-            validations={validationResults}
-            updateField={updateField}
-            panels={panels}
-          />
+              <SolarArray
+                project={project}
+                calculations={calculations}
+                selectedPanel={selectedPanel}
+                selectedInverter={selectedInverter}
+                validations={validationResults}
+                updateField={updateField}
+                panels={panels}
+              />
 
-          <WireSizing
-            project={project}
-            calculations={calculations}
-            validations={validationResults}
-            updateField={updateField}
-          />
+              <WireSizing
+                project={project}
+                calculations={calculations}
+                validations={validationResults}
+                updateField={updateField}
+              />
 
-          <Diagram
-            project={project}
-            calculations={calculations}
-            selectedPanel={selectedPanel}
-            selectedInverter={selectedInverter}
-            selectedBattery={selectedBattery}
-          />
+              <Diagram
+                project={project}
+                calculations={calculations}
+                selectedPanel={selectedPanel}
+                selectedInverter={selectedInverter}
+                selectedBattery={selectedBattery}
+              />
 
-          <CostEstimation
-            project={project}
-            calculations={calculations}
-            updateField={updateField}
-          />
+              <CostEstimation
+                project={project}
+                calculations={calculations}
+                updateField={updateField}
+              />
 
-          <ExportSection
-            project={project}
-            calculations={calculations}
-            selectedPanel={selectedPanel}
-            selectedInverter={selectedInverter}
-            selectedBattery={selectedBattery}
-            isMobile={isMobile}
-          />
+              <ExportSection
+                project={project}
+                calculations={calculations}
+                selectedPanel={selectedPanel}
+                selectedInverter={selectedInverter}
+                selectedBattery={selectedBattery}
+                isMobile={isMobile}
+              />
+            </>
+          )}
         </div>
       </main>
 
-      {!isDesktop && !outputOpen && (
+      {project.sizingMode !== 'simple' && !isDesktop && !outputOpen && (
         <button
           onClick={() => setOutputOpen(true)}
           style={{

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { ArrowLeft, Download, Check, List as Menu, ChartBar as BarChart3, ArrowCounterClockwise as Undo2, ArrowClockwise as Redo2, Sun, Moon } from '@phosphor-icons/react';
+import { ArrowLeft, Download, Check, List as Menu, ChartBar as BarChart3, ArrowCounterClockwise as Undo2, ArrowClockwise as Redo2, Sun, Moon, Sliders } from '@phosphor-icons/react';
 import Button from '../ui/Button';
 
 export default function TopBar({
@@ -18,6 +18,8 @@ export default function TopBar({
   isDesktop = true,
   theme = 'dark',
   onToggleTheme,
+  sizingMode = 'pro',
+  onToggleSizingMode,
 }) {
   const [editing, setEditing] = useState(false);
   const [editValue, setEditValue] = useState(projectName);
@@ -236,6 +238,73 @@ export default function TopBar({
             }}
           />
         ) : null}
+
+        {/* Sizing Mode Segmented Control for Desktop/Tablet */}
+        {!isMobile && (
+          <div style={{
+            display: 'flex',
+            background: 'var(--color-bg-deep)',
+            border: '1px solid var(--color-border)',
+            borderRadius: 'var(--radius-md)',
+            padding: '2px',
+            marginRight: 'var(--space-2)',
+            height: '28px',
+            alignItems: 'center',
+          }}>
+            <button
+              onClick={() => sizingMode !== 'simple' && onToggleSizingMode?.()}
+              style={{
+                background: sizingMode === 'simple' ? 'var(--color-surface)' : 'transparent',
+                border: 'none',
+                borderRadius: 'var(--radius-sm)',
+                color: sizingMode === 'simple' ? 'var(--color-primary-500)' : 'var(--color-text-secondary)',
+                fontSize: '12px',
+                fontWeight: 'var(--weight-semibold)',
+                padding: '0 var(--space-3)',
+                height: '100%',
+                cursor: 'pointer',
+                transition: 'all var(--duration-fast) var(--ease-default)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+              }}
+            >
+              Simple
+            </button>
+            <button
+              onClick={() => sizingMode !== 'pro' && onToggleSizingMode?.()}
+              style={{
+                background: sizingMode === 'pro' ? 'var(--color-surface)' : 'transparent',
+                border: 'none',
+                borderRadius: 'var(--radius-sm)',
+                color: sizingMode === 'pro' ? 'var(--color-primary-500)' : 'var(--color-text-secondary)',
+                fontSize: '12px',
+                fontWeight: 'var(--weight-semibold)',
+                padding: '0 var(--space-3)',
+                height: '100%',
+                cursor: 'pointer',
+                transition: 'all var(--duration-fast) var(--ease-default)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+              }}
+            >
+              Pro
+            </button>
+          </div>
+        )}
+
+        {/* Sizing Mode Icon Toggle for Mobile */}
+        {isMobile && (
+          <Button
+            variant="icon-only"
+            onClick={onToggleSizingMode}
+            title={`Switch to ${sizingMode === 'simple' ? 'Pro' : 'Simple'} Sizing`}
+            style={{ marginRight: '4px' }}
+          >
+            <Sliders size={18} />
+          </Button>
+        )}
 
         <Button
           variant="icon-only"
