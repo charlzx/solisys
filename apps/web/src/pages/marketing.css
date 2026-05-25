@@ -140,34 +140,40 @@
 .btn--md  { padding: 10px 20px; font-size: var(--text-base); }
 .btn--lg  { padding: 14px 28px; font-size: var(--text-lg); border-radius: var(--radius-lg); }
 
-/* === NAV GLASSMORPHISM === */
+/* === NAV FLOATING PILL GLASSMORPHISM === */
 .mkt-nav {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: var(--space-4);
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - var(--space-8));
+  max-width: 1200px;
   z-index: 100;
   background: rgba(10, 31, 13, 0.4);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(181, 240, 80, 0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(181, 240, 80, 0.08);
+  border-radius: 28px;
   transition:
+    top var(--duration-normal) var(--ease-default),
     background var(--duration-normal) var(--ease-default),
     border-color var(--duration-normal) var(--ease-default),
-    backdrop-filter var(--duration-normal) var(--ease-default);
+    box-shadow var(--duration-normal) var(--ease-default);
+  overflow: hidden;
 }
 
 .mkt-nav--scrolled {
-  background: color-mix(in srgb, var(--color-bg-deep) 90%, transparent);
-  border-color: rgba(181, 240, 80, 0.15);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  background: color-mix(in srgb, var(--color-bg-deep) 85%, transparent);
+  border-color: rgba(181, 240, 80, 0.2);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  top: var(--space-2);
 }
 
 .mkt-nav__inner {
-  max-width: var(--max-content-w);
+  max-width: 100%;
   margin: 0 auto;
   padding: 0 var(--space-6);
-  height: 64px;
+  height: 54px;
   display: flex;
   align-items: center;
   gap: var(--space-8);
