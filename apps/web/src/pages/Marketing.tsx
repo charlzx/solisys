@@ -1121,14 +1121,14 @@ function DownloadPage() {
 
             {/* Badges */}
             <div className="badge-group" style={{ display: 'flex', gap: '16px', marginBottom: '40px', flexWrap: 'wrap' }}>
-              <a href="https://apple.com" target="_blank" rel="noreferrer" className="btn btn--ghost" style={{ padding: '12px 24px', borderRadius: '8px', background: 'var(--color-surface)', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <a href="https://apple.com" target="_blank" rel="noreferrer" className="btn btn--ghost" style={{ padding: '12px 24px', background: 'var(--color-surface)', display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <Smartphone size={20} />
                 <div style={{ textAlign: 'left', lineHeight: 1.2 }}>
                   <span style={{ fontSize: '10px', display: 'block', color: 'var(--color-text-secondary)' }}>Download on the</span>
                   <span style={{ fontSize: '15px', fontWeight: 600 }}>App Store</span>
                 </div>
               </a>
-              <a href="https://google.com" target="_blank" rel="noreferrer" className="btn btn--ghost" style={{ padding: '12px 24px', borderRadius: '8px', background: 'var(--color-surface)', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <a href="https://google.com" target="_blank" rel="noreferrer" className="btn btn--ghost" style={{ padding: '12px 24px', background: 'var(--color-surface)', display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <Play size={20} />
                 <div style={{ textAlign: 'left', lineHeight: 1.2 }}>
                   <span style={{ fontSize: '10px', display: 'block', color: 'var(--color-text-secondary)' }}>GET IT ON</span>

@@ -101,7 +101,7 @@
   font-family: 'DM Sans', var(--font-body), sans-serif;
   font-weight: 600;
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-full);
   cursor: pointer;
   text-decoration: none;
   transition:
@@ -138,7 +138,7 @@
 
 .btn--sm  { padding: 8px 16px;  font-size: var(--text-sm); }
 .btn--md  { padding: 10px 20px; font-size: var(--text-base); }
-.btn--lg  { padding: 14px 28px; font-size: var(--text-lg); border-radius: var(--radius-lg); }
+.btn--lg  { padding: 14px 28px; font-size: var(--text-lg); border-radius: var(--radius-full); }
 
 /* === NAV FLOATING PILL GLASSMORPHISM === */
 .mkt-nav {
@@ -172,7 +172,7 @@
 .mkt-nav__inner {
   max-width: 100%;
   margin: 0 auto;
-  padding: 0 var(--space-6);
+  padding: 0 var(--space-4);
   height: 54px;
   display: flex;
   align-items: center;
@@ -180,7 +180,7 @@
 }
 
 @media (min-width: 768px) {
-  .mkt-nav__inner { padding: 0 var(--space-12); }
+  .mkt-nav__inner { padding: 0 var(--space-6); }
 }
 
 .mkt-nav__logo {
@@ -228,7 +228,7 @@
   background: none;
   border: 1px solid var(--color-border);
   color: var(--color-text-secondary);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-full);
   width: 34px;
   height: 34px;
   display: flex;
