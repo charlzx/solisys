@@ -201,12 +201,15 @@ function InteractiveMockup() {
 
   return (
     <div className="mkt-mockup" style={{ width: '100%', maxWidth: '860px', margin: '0 auto', background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-xl)', overflow: 'hidden', boxShadow: 'var(--shadow-xl)' }}>
-      {/* Top Window Bar */}
-      <div className="mkt-mockup__bar" style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '10px 16px', background: 'var(--color-bg-deep)', borderBottom: '1px solid var(--color-border-subtle)' }}>
-        <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#EF4444' }} />
-        <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#F59E0B' }} />
-        <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#22C55E' }} />
-        <span style={{ marginLeft: '12px', fontSize: '11px', color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)' }}>solisys-local-calculation-engine.js</span>
+      {/* Clean premium widget header, no terminal window dots */}
+      <div className="mkt-mockup__bar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 20px', background: 'var(--color-bg-deep)', borderBottom: '1px solid var(--color-border-subtle)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Zap size={14} style={{ color: 'var(--color-accent)' }} />
+          <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--color-text-primary)', letterSpacing: 'var(--tracking-wider)', textTransform: 'uppercase' }}>Live Interactive Sizing Estimator</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <span className="mkt-badge" style={{ fontSize: '10px', padding: '2px 8px', borderRadius: 'var(--radius-full)', background: 'var(--color-accent-muted)', color: 'var(--color-accent)', textTransform: 'uppercase', letterSpacing: 'var(--tracking-wide)' }}>Local Sizing Engine</span>
+        </div>
       </div>
       
       {/* Interactive Sizing Grid */}

@@ -203,7 +203,7 @@
 .mkt-nav__inner {
   max-width: 100%;
   margin: 0 auto;
-  padding: 0 var(--space-4);
+  padding: 0 var(--space-3);
   height: 54px;
   display: flex;
   align-items: center;
@@ -211,7 +211,7 @@
 }
 
 @media (min-width: 768px) {
-  .mkt-nav__inner { padding: 0 var(--space-6); }
+  .mkt-nav__inner { padding: 0 var(--space-4); }
 }
 
 .mkt-nav__logo {
